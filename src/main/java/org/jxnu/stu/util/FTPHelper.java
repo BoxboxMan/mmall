@@ -1,12 +1,8 @@
 package org.jxnu.stu.util;
 
-import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.jxnu.stu.common.BusinessException;
 import org.jxnu.stu.common.ReturnCode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;

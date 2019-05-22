@@ -123,5 +123,9 @@ public interface CartMapper {
 
     int getCartProductCount(Integer userId);
 
+    List<Cart> selectCheckedByUserId(Integer userId);
+
+    int deleteAllCart(Integer userId);
+
 
 }

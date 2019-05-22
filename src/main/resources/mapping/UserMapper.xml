@@ -390,18 +390,12 @@
       question = #{question} and
       answer = #{answer}
   </select>
-  <update id="forgetResetPassword" parameterType="java.lang.String">
+  <update id="resetPassword" parameterType="java.lang.String">
     update
     mmall_user
     set
     password = #{password},
     update_time = now()
-  </update>
-  <update id="resetPassword" parameterType="java.lang.String">
-    update
-    mmall_user
-    set
-    password = #{password}
     where username = #{username}
   </update>
   <select id="checkPasswordOld" parameterType="java.lang.String" resultType="java.lang.Integer">

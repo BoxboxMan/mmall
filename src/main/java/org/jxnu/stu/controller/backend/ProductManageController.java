@@ -51,10 +51,6 @@ public class ProductManageController {
     @RequestMapping(value = "/list",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<PageInfo> list(@RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "10") Integer pageSize, HttpSession session) throws BusinessException {
-        UserVo user = (UserVo) session.getAttribute(Constant.CURRENT_USER);
-        if(user == null){
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
         PageInfo pageInfo = productService.list(pageNum, pageSize);
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),pageInfo);
     }
@@ -74,10 +70,6 @@ public class ProductManageController {
     public  ServerResponse<PageInfo> search(String productName,Integer productId,@RequestParam(defaultValue = "1") Integer pageNum,
                                             @RequestParam(defaultValue = "10") Integer pageSize, HttpSession session) throws BusinessException {
 
-        UserVo user = (UserVo) session.getAttribute(Constant.CURRENT_USER);
-        if(user == null){
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
         PageInfo pageInfo = productService.search(productName, productId, pageNum, pageSize);
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),pageInfo);
     }
@@ -92,12 +84,8 @@ public class ProductManageController {
     @RequestMapping(value = "/upload",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<Map<String,String>> upload(MultipartFile file, HttpServletRequest request) throws BusinessException {
-        UserVo user = (UserVo) request.getSession().getAttribute(Constant.CURRENT_USER);
-        if(user == null){
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
         String path = request.getSession().getServletContext().getRealPath("upload");
-        String targetFileName = fileService.upload(file, path, request.getSession());
+        String targetFileName = fileService.upload(file, path, request);
         String url = ftpServerHttpPrefix + targetFileName;
         Map<String,String> fileMap = new HashMap<>();
         fileMap.put("uri",targetFileName);
@@ -108,10 +96,6 @@ public class ProductManageController {
     @RequestMapping(value = "/detail",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<ProductVo> detail(Integer productId,HttpServletRequest request) throws BusinessException {
-        UserVo user = (UserVo) request.getSession().getAttribute(Constant.CURRENT_USER);
-        if(user == null){
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
         if(productId == null){
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR,"请输入产品id");
         }
@@ -122,10 +106,6 @@ public class ProductManageController {
     @RequestMapping(value = "/set_sale_status",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> setSaleStatus(Integer productId, Integer status,HttpServletRequest request) throws BusinessException {
-        UserVo user = (UserVo) request.getSession().getAttribute(Constant.CURRENT_USER);
-        if(user == null){
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
         if(productId == null || status == null){
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR);
         }
@@ -142,10 +122,6 @@ public class ProductManageController {
     @RequestMapping(value = "/save",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse save(@Valid Product product,HttpServletRequest request) throws BusinessException {
-        UserVo user = (UserVo) request.getSession().getAttribute(Constant.CURRENT_USER);
-        if(user == null){
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
         ValidationResult validate = validation.validate(product);
         if(validate.isHasError()){
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR,validate.getErrMsg());
@@ -167,14 +143,8 @@ public class ProductManageController {
     @ResponseBody
     public Map richtextImgUpload(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws BusinessException {
         Map<String,String> map = Maps.newHashMap();
-        UserVo user = (UserVo) request.getSession().getAttribute(Constant.CURRENT_USER);
-        if(user == null){
-            map.put("success","false");
-            map.put("msg","上传失败");
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
         String path = request.getSession().getServletContext().getRealPath("upload");
-        String targetFileName = fileService.upload(file, path, request.getSession());
+        String targetFileName = fileService.upload(file, path, request);
         String url = ftpServerHttpPrefix + targetFileName;
         map.put("success","true");
         map.put("msg","上传成功");

@@ -7,6 +7,7 @@ import org.jxnu.stu.dao.pojo.User;
 import org.jxnu.stu.service.bo.UserBo;
 
 import javax.jws.soap.SOAPBinding;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -24,9 +25,9 @@ public interface UserService {
 
     void forgetResetPassword(String username, String newPassword, String forgetToken) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException;
 
-    void resetPassword(String passwordOld, String passwordNew, HttpSession session) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException;
+    void resetPassword(String passwordOld, String passwordNew, HttpServletRequest request) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException;
 
-    void updateInformation(User user, HttpSession session) throws BusinessException;
+    void updateInformation(User user, HttpServletRequest request) throws BusinessException;
 
 
 }

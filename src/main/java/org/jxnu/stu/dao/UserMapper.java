@@ -104,8 +104,6 @@ public interface UserMapper {
 
     int forgetCheckAnswer(@Param("username") String username,@Param("question") String question,@Param("answer") String answer);
 
-    int forgetResetPassword(@Param("username") String username,@Param("password") String password);
-
     int resetPassword(@Param("username") String username,@Param("password") String password);
 
     int checkPasswordOld(@Param("username") String username,@Param("password") String password);

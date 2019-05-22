@@ -94,5 +94,9 @@ public interface OrderItemMapper {
      */
     int updateByPrimaryKey(OrderItem record);
 
-    List<OrderItem> selectByOrderNoAndUserId(@Param("orderNo")String orderNo,@Param("userId")Integer userId);
+    List<OrderItem> selectByUserIdAndOrderNo(@Param("userId")Integer userId,@Param("orderNo")Long orderNo);
+
+    int batchInsert(@Param("orderItemList") List<OrderItem> orderItemList);
+
+    List<OrderItem> selectByOrderNo(Long orderNo);
 }

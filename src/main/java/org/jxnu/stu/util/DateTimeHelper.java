@@ -14,7 +14,7 @@ public class DateTimeHelper {
 
     public static Date strToDate(String str) throws BusinessException {
         if(str == null){
-            throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR);
+            return null;
         }
         DateTimeFormatter dateTimeFormat = DateTimeFormat.forPattern(STANDARD_PATTERN);
         DateTime dateTime = dateTimeFormat.parseDateTime(str);
@@ -23,7 +23,7 @@ public class DateTimeHelper {
 
     public static Date strToDate(String str,String pattern) throws BusinessException {
         if(str == null){
-            throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR);
+            return null;
         }
         DateTimeFormatter dateTimeFormat = DateTimeFormat.forPattern(pattern);
         DateTime dateTime = dateTimeFormat.parseDateTime(str);
@@ -32,7 +32,7 @@ public class DateTimeHelper {
 
     public static String dateToString(Date date) throws BusinessException {
         if(date == null){
-            throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR);
+            return null;
         }
         DateTime dateTime = new DateTime(date);
         return dateTime.toString(STANDARD_PATTERN);
@@ -40,7 +40,7 @@ public class DateTimeHelper {
 
     public static String dateToString(Date date,String pattern) throws BusinessException {
         if(date == null){
-            throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR);
+            return null;
         }
         DateTime dateTime = new DateTime(date);
         return dateTime.toString(pattern);

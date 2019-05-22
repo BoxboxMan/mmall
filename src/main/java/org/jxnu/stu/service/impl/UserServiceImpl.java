@@ -7,21 +7,28 @@ import org.jxnu.stu.dao.UserMapper;
 import org.jxnu.stu.dao.pojo.User;
 import org.jxnu.stu.service.UserService;
 import org.jxnu.stu.service.bo.UserBo;
+import org.jxnu.stu.util.CookieHelper;
 import org.jxnu.stu.util.Md5Helper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Override
     public UserBo login(String username, String password) throws Exception{
@@ -82,8 +89,7 @@ public class UserServiceImpl implements UserService {
         int i = userMapper.forgetCheckAnswer(username, question, answer);
         if(i > 0){
             String token = UUID.randomUUID().toString();
-            TokenCache.set(username,token);
-            session.setAttribute(Constant.USER_FORGET_TOKEN,token);
+            redisTemplate.opsForValue().set(username,token,600, TimeUnit.SECONDS);//把回答正确问题的username与token绑定到一起，待后续重置密码的时候验证
             return token;
         }else{
             throw new BusinessException(ReturnCode.USER_ANSWER_WRONG);
@@ -92,22 +98,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void forgetResetPassword(String username, String newPassword, String forgetToken) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
-        String cacheForgetToken = TokenCache.get(username);
+        String cacheForgetToken = (String) redisTemplate.opsForValue().get(username);//验证终止密码的username与传来的token是否配对，若不配对则是横向越权
         if(cacheForgetToken == null){
             throw new BusinessException(ReturnCode.ERROR,"请填写您重置密码时正确的用户名");
         }
         if(!com.alibaba.druid.util.StringUtils.equals(cacheForgetToken,forgetToken)){
             throw new BusinessException(ReturnCode.USER_FORGETTOKEN_ERROR,"请重新回答密保问题");
         }
-        int i = userMapper.forgetResetPassword(username, Md5Helper.encode(newPassword));
+        int i = userMapper.resetPassword(username, Md5Helper.encode(newPassword));
         if(i <= 0){
             throw new BusinessException(ReturnCode.USER_RESET_PASSWORD_ERROR);
         }
     }
 
     @Override
-    public void resetPassword(String passwordOld, String passwordNew, HttpSession session) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
-        UserVo userVo = (UserVo) session.getAttribute(Constant.CURRENT_USER);
+    public void resetPassword(String passwordOld, String passwordNew, HttpServletRequest request) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+        String loggingToken = CookieHelper.readLoggingToken(request);
+        if(loggingToken == null){
+            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
+        }
+        UserVo userVo = (UserVo) redisTemplate.opsForValue().get(loggingToken);
         if(userVo == null){
             throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
         }
@@ -122,8 +132,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateInformation(User user, HttpSession session) throws BusinessException {
-        UserVo userVo = (UserVo) session.getAttribute(Constant.CURRENT_USER);
+    public void updateInformation(User user, HttpServletRequest request) throws BusinessException {
+        String loggingToken = CookieHelper.readLoggingToken(request);
+        if(loggingToken == null){
+            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
+        }
+        UserVo userVo = (UserVo) redisTemplate.opsForValue().get(loggingToken);
         if(userVo == null){
             throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
         }
@@ -134,7 +148,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public UserBo coverUserBoFromUserDo(User user){
+    private UserBo coverUserBoFromUserDo(User user){
         if(user == null){
             return null;
         }

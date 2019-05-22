@@ -17,4 +17,6 @@ public interface CartService {
     CartVo selectOrUnSelect(Integer userId,Integer productId,Integer checkStatus);
 
     Integer getCartProductCount(Integer userId);
+
+    Boolean clearCart(Integer userId);
 }

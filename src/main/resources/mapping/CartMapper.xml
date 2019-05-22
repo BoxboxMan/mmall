@@ -381,6 +381,19 @@
         where user_id = #{userId}
     </select>
 
+    <select id="selectCheckedByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mmall_cart
+        where user_id = #{userId}
+        and checked = 1
+    </select>
+
+    <delete id="deleteAllCart" parameterType="java.lang.Integer">
+        delete
+        from mmall_cart
+        where user_id = #{userId}
+    </delete>
 
 
 

@@ -6,6 +6,7 @@ public enum ReturnCode implements CommonReturn{
     SUCCESS(10001,"成功！"),
     PARAMETER_VALUE_ERROR(10005,"参数异常"),
     COVER_ERROR(10006,"类型转换错误"),
+
     //start from 20000 to 30000 be used to description User Error
     USER_NOT_EXIST(20001,"用户不存在"),
     USER_ALREADY_EXIST(20002,"用户已经存在"),
@@ -18,6 +19,7 @@ public enum ReturnCode implements CommonReturn{
     USER_FORGETTOKEN_ERROR(20009,"重置密码forgetToken不一致"),
     USER_RESET_PASSWORD_ERROR(20010,"用户重置密码失败"),
     USER_INFO_UPDATE_ERROR(20011,"用户信息更新失败"),
+    USER_HAS_NO_PERMISSION(20012,"用户无权限"),
 
     //start from 30000 to 40000 be used to description Category Error
     CATEGORY_NOT_EXIST(30000,"该商品类别信息不存在"),
@@ -29,12 +31,13 @@ public enum ReturnCode implements CommonReturn{
     //start from 40000 to 50000 be used to description product info
     PRODUCT_NOT_EXIST(40000,"商品不存在"),
     PRODUCT_UPDATE_ERROR(40001,"更新商品信息失败"),
-
+    PRODUCT_STOCK_NOT_ENOUGH(40002,"商品库存不足"),
 
     //start from 50000 to 60000 be used to description cart info
     CART_ADD_ERROR(50001,"购物车添加商品失败"),
     CART_UPDATE_ERRIR(50002,"更新购物车商品信息失败"),
     CART_DELETE_ERROR(50003,"购物车删除商品失败"),
+    CART_CLEAR_FAILD(50004,"情况购物车失败"),
 
     //start from 60000 to 70000 be used to description shipping info
     SHIPPING_ADD_ERROR(60000,"添加收获地址信息失败"),
@@ -46,7 +49,9 @@ public enum ReturnCode implements CommonReturn{
     //start from 70000 to 80000 be used to description order info
     ORDER_NOT_EXIST(70000,"订单信息不存在"),
     ORDER_STATUS_NOT_EXIST(70001,"该订单状态未被定义"),
-
+    ORDER_CREATE_FAILD(70002,"创建订单失败"),
+    ORDER_CANCEL_FAILD(70003,"取消订单失败"),
+    ORDER_DELIVER_FAILD(70004,"订单发货失败"),
 
     //start from 80000 to 90000 be used to description alipay error info
     ALIPAY_CALLBACK_REPETOR(80000,"阿里回调重复"),

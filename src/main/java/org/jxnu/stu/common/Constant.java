@@ -25,13 +25,12 @@ public class Constant {
     public static final int CHECKED = 1;
     public static final int UNCHECKED = 0;
 
-    public interface ProductListOrderBy{
-        Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_asc","price_desc");
+    public interface Time{
+        public int SESSION_TIME_OUT = 60 * 30;
     }
 
-    public interface AliPayCallBack{
-        String CALLBACK_SUCCESS = "success";
-        String CALLBACK_FAILED = "failed";
+    public interface ProductListOrderBy{
+        Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_asc","price_desc");
     }
 
     public enum  OrderStatus{
@@ -65,6 +64,56 @@ public class Constant {
             }
             throw new BusinessException(ReturnCode.ORDER_STATUS_NOT_EXIST);
         }
+    }
+
+    public enum  PaymentType{
+        OLINE_PAY(1,"网上支付"),
+        ;
+
+        private Integer statusCode;
+        private String statusMsg;
+        PaymentType(Integer statusCode,String statusMsg){
+            this.statusCode = statusCode;
+            this.statusMsg = statusMsg;
+        }
+
+        public Integer getStatusCode() {
+            return statusCode;
+        }
+
+        public String getStatusMsg() {
+            return statusMsg;
+        }
+    }
+
+    public enum PayPlatform{
+        ALI_ZFB(1,"支付宝"),
+        TENGXUN_WX(2,"微信"),
+        ;
+        private Integer platformCode;
+        private String paltformName;
+        PayPlatform(Integer platformCode,String paltformName){
+            this.platformCode = platformCode;
+            this.paltformName = paltformName;
+        }
+
+        public Integer getPlatformCode() {
+            return platformCode;
+        }
+
+        public String getPaltformName() {
+            return paltformName;
+        }
+    }
+
+    public interface AlipayCallback{
+        String TRADE_STATUS_WAIT_BUYER_PAY = "WAIT_BUYER_PAY";
+        String TRADE_STATUS_TRADE_CLOSED = "TRADE_CLOSED";
+        String TRADE_STATUS_TRADE_SUCCESS = "TRADE_SUCCESS";
+        String TRADE_STATUS_TRADE_FINISHED = "TRADE_FINISHED";
+
+        String RESPONSE_SUCCESS = "success";
+        String RESPONSE_FAILED = "failed";
     }
 
     public static final boolean CATEGORY_NORMAL = true;

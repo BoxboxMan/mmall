@@ -7,18 +7,24 @@ import org.jxnu.stu.dao.UserMapper;
 import org.jxnu.stu.dao.pojo.User;
 import org.jxnu.stu.service.UserService;
 import org.jxnu.stu.service.bo.UserBo;
+import org.jxnu.stu.util.CookieHelper;
 import org.jxnu.stu.util.DateTimeHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping("/user")
@@ -33,9 +39,12 @@ public class UserController {
     @Autowired
     private ValidationImpl validator;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<UserVo> login(String username, String password, HttpSession session) throws Exception {
+    public ServerResponse<UserVo> login(String username, String password, HttpSession session, HttpServletResponse response) throws Exception {
         if(StringUtils.isBlank(username)){
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR,"用户名不能为空");
         }
@@ -44,7 +53,8 @@ public class UserController {
         }
         UserBo userBo = userService.login(username, password);
         UserVo userVo = coverUserVoFromUserBo(userBo);
-        session.setAttribute(Constant.CURRENT_USER,userVo);
+        CookieHelper.writeLoggingToken(response, session.getId());//写入客户端
+        redisTemplate.opsForValue().set(session.getId(),userVo,Constant.Time.SESSION_TIME_OUT, TimeUnit.SECONDS);//写入redis
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),ReturnCode.USER_LOGIN_SUCCESS.getMsg(),userVo);
     }
 
@@ -72,13 +82,10 @@ public class UserController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode());
     }
 
-    @RequestMapping(value = "/get_user_info",method = RequestMethod.POST)
+    @RequestMapping(value = "/get_user_info",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<UserVo> getUserInfo(HttpSession session) throws Exception {
-        UserVo userVo = (UserVo) session.getAttribute(Constant.CURRENT_USER);
-        if(userVo == null){
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN,"用户没有登陆无法获取当前用户信息");
-        }
+    public ServerResponse<UserVo> getUserInfo(HttpServletRequest request) throws Exception {
+        UserVo userVo = (UserVo) redisTemplate.opsForValue().get(CookieHelper.readLoggingToken(request));
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),userVo);
     }
 
@@ -126,42 +133,37 @@ public class UserController {
 
     @RequestMapping(value = "/reset_password",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> resetPassword(String passwordOld,String passwordNew,HttpSession session) throws Exception {
+    public ServerResponse<String> resetPassword(String passwordOld,String passwordNew,HttpServletRequest request) throws Exception {
         if(StringUtils.isBlank(passwordOld)){
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR,"旧密码不能为空");
         }
         if(StringUtils.isBlank(passwordOld)){
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR,"新密码不能为空");
         }
-        userService.resetPassword(passwordOld,passwordNew,session);
+        userService.resetPassword(passwordOld,passwordNew,request);
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),"修改密码成功");
     }
 
     @RequestMapping(value = "/update_information",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> updateInformation(User user,HttpSession session) throws Exception {
-        userService.updateInformation(user,session);
+    public ServerResponse<String> updateInformation(User user,HttpServletRequest request) throws Exception {
+        userService.updateInformation(user,request);
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),"更新个人信息成功");
     }
 
     @RequestMapping(value = "/getInformation",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<UserVo> getInformation(HttpSession session) throws Exception{
-        UserVo userVo = (UserVo) session.getAttribute(Constant.CURRENT_USER);
-        if (userVo == null){
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
+    public ServerResponse<UserVo> getInformation(HttpServletRequest request) throws Exception{
+        UserVo userVo = (UserVo) redisTemplate.opsForValue().get(CookieHelper.readLoggingToken(request));
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),userVo);
     }
 
     @RequestMapping(value = "/logout",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> logout(HttpSession session) throws BusinessException {
-        if(session.getAttribute(Constant.CURRENT_USER) == null){
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
-        session.removeAttribute(Constant.CURRENT_USER);
-        if(session.getAttribute(Constant.CURRENT_USER) == null){
+    public ServerResponse<String> logout(HttpServletRequest request,HttpServletResponse response) throws BusinessException {
+        String loggingToken = CookieHelper.readLoggingToken(request);
+        if(redisTemplate.delete(loggingToken)){
+            CookieHelper.delLoggingToken(request,response);
             return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),"退出成功");
         }
         return ServerResponse.createServerResponse(ReturnCode.ERROR.getCode(),"服务器异常");

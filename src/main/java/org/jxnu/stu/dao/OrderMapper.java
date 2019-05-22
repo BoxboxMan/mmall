@@ -95,7 +95,13 @@ public interface OrderMapper {
      */
     int updateByPrimaryKey(Order record);
 
-    Order selectByOrderNoAndUserId(@Param("orderNo")String orderNo,@Param("userId")Integer userId);
+    Order selectByOrderNoAndUserId(@Param("orderNo")Long orderNo,@Param("userId")Integer userId);
 
-    Order selectByOrderNo(String orderNo);
+    Order selectByOrderNo(Long orderNo);
+
+    List<Order> selectByUserId(Integer userId);
+
+    int updateStatusByOrderNo(@Param("orderNo") Long orderNo,@Param("status") Integer status);
+
+    List<Order> listAll();
 }

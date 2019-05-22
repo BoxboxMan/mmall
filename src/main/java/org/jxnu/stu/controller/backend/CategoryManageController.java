@@ -6,17 +6,21 @@ import org.jxnu.stu.common.Constant;
 import org.jxnu.stu.common.ReturnCode;
 import org.jxnu.stu.common.ServerResponse;
 import org.jxnu.stu.controller.vo.CategoryVo;
+import org.jxnu.stu.controller.vo.UserVo;
 import org.jxnu.stu.dao.pojo.Category;
 import org.jxnu.stu.service.CategoryService;
 import org.jxnu.stu.service.bo.CategoryBo;
+import org.jxnu.stu.util.CookieHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,20 +32,20 @@ public class CategoryManageController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
+
     /**
      * get category info ,find category info parallel
      *
      * @param categoryId
-     * @param session
+     * @param request
      * @return
      * @throws BusinessException
      */
     @RequestMapping(value = "/get_category", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<List<CategoryVo>> getCategory(@RequestParam(defaultValue = "0") Integer categoryId, HttpSession session) throws BusinessException {
-        if (session.getAttribute(Constant.CURRENT_USER) == null) {
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
+    public ServerResponse<List<CategoryVo>> getCategory(@RequestParam(defaultValue = "0") Integer categoryId, HttpServletRequest request) throws BusinessException {
         List<CategoryBo> categoryBoList = categoryService.getChildrenParallelCategory(categoryId);
         List<CategoryVo> categoryVoList = new ArrayList<>();
         for (CategoryBo categoryBo : categoryBoList) {
@@ -54,9 +58,6 @@ public class CategoryManageController {
     @RequestMapping(value = "/add_category", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> addCategory(@RequestParam(defaultValue = "0") Integer parentId, String categoryName, HttpSession session) throws BusinessException {
-        if (session.getAttribute(Constant.CURRENT_USER) == null) {
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
         if (StringUtils.isEmpty(categoryName)) {
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR, "商品分类名称为空");
         }
@@ -67,9 +68,6 @@ public class CategoryManageController {
     @RequestMapping(value = "/set_category_name", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> setCategoryName(Integer categoryId, String categoryName, HttpSession session) throws BusinessException {
-        if (session.getAttribute(Constant.CURRENT_USER) == null) {
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
         if (categoryId == null) {
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR, "商品类别ID为空");
         }
@@ -83,9 +81,6 @@ public class CategoryManageController {
     @RequestMapping(value = "/get_deep_category", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<List<CategoryVo>> getDeepCategory(Integer categoryId, HttpSession session) throws BusinessException {
-        if (session.getAttribute(Constant.CURRENT_USER) == null) {
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
         if (categoryId == null) {
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR, "商品类别ID为空");
         }

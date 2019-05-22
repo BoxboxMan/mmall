@@ -411,11 +411,13 @@
       </foreach>
     </if>
   </select>
+
   <select id="listAll" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
     from mmall_product
   </select>
+
   <select id="listProductByProductName" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
@@ -426,9 +428,17 @@
       </if>
     </where>
   </select>
+
   <update id="setSaleStatus">
     update mmall_product
     set status = #{status},update_time = now()
     where id = #{productId}
   </update>
+
+  <update id="updateStockById" parameterType="java.lang.Integer">
+    update mmall_product
+    set stock = stock + #{number}
+    where id = #{productId}
+  </update>
+
 </mapper>

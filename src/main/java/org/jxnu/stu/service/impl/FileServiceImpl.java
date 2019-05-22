@@ -7,12 +7,15 @@ import org.jxnu.stu.common.ReturnCode;
 import org.jxnu.stu.controller.vo.ProductVo;
 import org.jxnu.stu.controller.vo.UserVo;
 import org.jxnu.stu.service.FileService;
+import org.jxnu.stu.util.CookieHelper;
 import org.jxnu.stu.util.DateTimeHelper;
 import org.jxnu.stu.util.FTPHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
@@ -21,13 +24,17 @@ import java.util.Date;
 @Service
 public class FileServiceImpl implements FileService {
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @Override
-    public String upload(MultipartFile file, String path, HttpSession session) throws BusinessException{
+    public String upload(MultipartFile file, String path, HttpServletRequest request) throws BusinessException{
         String originalFilename = file.getOriginalFilename();
         String extensionName = originalFilename.substring(originalFilename.lastIndexOf("."));
         //上传文件名拼接逻辑：当前时间+用户id
         String now = DateTimeHelper.dateToString(new Date()).replaceAll(" ","").replaceAll("-","").replaceAll(":","");
-        UserVo userVo = (UserVo) session.getAttribute(Constant.CURRENT_USER);
+        String loggingToken = CookieHelper.readLoggingToken(request);
+        UserVo userVo = (UserVo) redisTemplate.opsForValue().get(loggingToken);
         String userId = String.valueOf(userVo.getId());
         String uploadFileName = now + userId + extensionName;
         File fileDir = new File(path);

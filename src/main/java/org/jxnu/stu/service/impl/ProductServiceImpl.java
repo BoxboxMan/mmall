@@ -15,6 +15,7 @@ import org.jxnu.stu.dao.pojo.Product;
 import org.jxnu.stu.service.ProductService;
 import org.jxnu.stu.service.bo.CategoryBo;
 import org.jxnu.stu.util.DateTimeHelper;
+import org.jxnu.stu.util.PropertiesHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,6 +97,10 @@ public class ProductServiceImpl implements ProductService {
     public PageInfo list(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         List<Product> products = productMapper.listAll();
+        for(Product productItem:products){
+            productItem.setMainImage(PropertiesHelper.getProperties("ftp.server.http.prefix"));
+            productItem.setSubImages(PropertiesHelper.getProperties("ftp.server.http.prefix"));
+        }
         PageInfo pageInfo = new PageInfo(products);
         return pageInfo;
     }
@@ -164,6 +169,7 @@ public class ProductServiceImpl implements ProductService {
         }
         ProductListVo productListVo = new ProductListVo();
         BeanUtils.copyProperties(product, productListVo);
+        productListVo.setMainImage(PropertiesHelper.getProperties("ftp.server.http.prefix")+product.getMainImage());
         return productListVo;
     }
 
@@ -177,6 +183,8 @@ public class ProductServiceImpl implements ProductService {
         }
         ProductVo productVo = new ProductVo();
         BeanUtils.copyProperties(product, productVo);
+        productVo.setMainImage(PropertiesHelper.getProperties("ftp.server.http.prefix")+product.getMainImage());
+        productVo.setSubImages(PropertiesHelper.getProperties("ftp.server.http.prefix")+product.getSubImages());
         productVo.setCreateTime(DateTimeHelper.dateToString(product.getCreateTime()));
         productVo.setUpdateTime(DateTimeHelper.dateToString(product.getUpdateTime()));
         return productVo;
