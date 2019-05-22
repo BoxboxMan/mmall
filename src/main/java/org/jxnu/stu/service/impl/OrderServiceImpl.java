@@ -49,7 +49,6 @@ import java.util.*;
 @Slf4j
 public class OrderServiceImpl implements OrderService {
 
-    private Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     @Autowired
     private OrderItemMapper orderItemMapper;
@@ -138,7 +137,7 @@ public class OrderServiceImpl implements OrderService {
         AlipayF2FPrecreateResult result = tradeService.tradePrecreate(builder);
         switch (result.getTradeStatus()) {
             case SUCCESS:
-                logger.info("支付宝预下单成功: )");
+                log.info("支付宝预下单成功: )");
 
                 AlipayTradePrecreateResponse response = result.getResponse();
                 dumpResponse(response);
@@ -151,13 +150,13 @@ public class OrderServiceImpl implements OrderService {
                 // 需要修改为运行机器上的路径
                 String filePath = String.format(path + "/qr-%s.png",
                         response.getOutTradeNo());
-                logger.info("filePath:" + filePath);
+                log.info("filePath:" + filePath);
                 ZxingUtils.getQRCodeImge(response.getQrCode(), 256, filePath);
                 File targetFile = new File(filePath);
                 try {
                     FTPHelper.uploadFile(Lists.newArrayList(targetFile));
                 } catch (Exception e) {
-                    logger.error("上传二维码失败",e);
+                    log.error("上传二维码失败",e);
                     throw new Exception(e);
                 }
                 //上传完成后删除图片
@@ -167,15 +166,15 @@ public class OrderServiceImpl implements OrderService {
                 map.put("qrPath",PropertiesHelper.getProperties("ftp.server.http.prefix")+targetFile.getName());
                 return map;
             case FAILED:
-                logger.error("支付宝预下单失败!!!");
+                log.error("支付宝预下单失败!!!");
                 throw new BusinessException(ReturnCode.ERROR,"支付宝预下单失败!!!");
 
             case UNKNOWN:
-                logger.error("系统异常，预下单状态未知!!!");
+                log.error("系统异常，预下单状态未知!!!");
                 throw new BusinessException(ReturnCode.ERROR,"系统异常，预下单状态未知!!!");
 
             default:
-                logger.error("不支持的交易状态，交易返回异常!!!");
+                log.error("不支持的交易状态，交易返回异常!!!");
                 throw new BusinessException(ReturnCode.ERROR,"不支持的交易状态，交易返回异常!!!");
         }
 
@@ -216,23 +215,23 @@ public class OrderServiceImpl implements OrderService {
                 return "恶意请求将提交网警处理!";
             }
         } catch (AlipayApiException e) {
-            logger.error("支付宝验签失败",e);
+            log.error("支付宝验签失败",e);
             throw new BusinessException(ReturnCode.ERROR,"支付宝验签失败");
         }
         //判断是否为重复通知
         String out_trade_no = map.get("out_trade_no");
         Order callBackOrder = orderMapper.selectByOrderNo(Long.valueOf(out_trade_no));
         if(callBackOrder == null){
-            logger.info(ReturnCode.ALIPAY_CALLBACK_ORDER_NOT_EXIST.getMsg());
+            log.info(ReturnCode.ALIPAY_CALLBACK_ORDER_NOT_EXIST.getMsg());
             return "false";
         }
         if(callBackOrder.getStatus() >= Constant.OrderStatus.ORDER_PAYED.getStatusCode()){
-            logger.info(ReturnCode.ALIPAY_CALLBACK_REPETOR.getMsg());
+            log.info(ReturnCode.ALIPAY_CALLBACK_REPETOR.getMsg());
             return "false";
         }
         //判断total_amount是否确实为该订单的实际金额
         if(new BigDecimal(map.get("total_amount")).compareTo(callBackOrder.getPayment()) != 0){
-            logger.info(ReturnCode.ALIPAY_CALLBACK_AMOUNT_NOT_EQUAL.getMsg());
+            log.info(ReturnCode.ALIPAY_CALLBACK_AMOUNT_NOT_EQUAL.getMsg());
             return "false";
         }
         String tradeStatus = map.get("trade_status");
@@ -614,12 +613,12 @@ public class OrderServiceImpl implements OrderService {
      */
     private void dumpResponse(AlipayResponse response) {
         if (response != null) {
-            logger.info(String.format("code:%s, msg:%s", response.getCode(), response.getMsg()));
+            log.info(String.format("code:%s, msg:%s", response.getCode(), response.getMsg()));
             if (StringUtils.isNotEmpty(response.getSubCode())) {
-                logger.info(String.format("subCode:%s, subMsg:%s", response.getSubCode(),
+                log.info(String.format("subCode:%s, subMsg:%s", response.getSubCode(),
                         response.getSubMsg()));
             }
-            logger.info("body:" + response.getBody());
+            log.info("body:" + response.getBody());
         }
     }
 }
