@@ -363,7 +363,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 用户根据订单号查询自身订单
+     * 用户根据订单号查询自身订
      * @param userId
      * @param orderNo
      * @return
