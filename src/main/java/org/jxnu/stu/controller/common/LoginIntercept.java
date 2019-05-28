@@ -62,7 +62,7 @@ public class LoginIntercept implements HandlerInterceptor {
             userVo = (UserVo) redisTemplate.opsForValue().get(loggingToken);
         }
         //用户未登录，或者为后台请求，则必须为管理员身份
-        if(userVo == null || (requestURL.matches("/manage") && userVo.getRole() != Constant.USER_ADMIN)){
+        if(userVo == null || (requestURL.contains("/manage") && userVo.getRole() != Constant.USER_ADMIN)){
             //设置PrintWriter
             response.reset();
             response.setCharacterEncoding("UTF-8");
@@ -71,7 +71,7 @@ public class LoginIntercept implements HandlerInterceptor {
             if(userVo == null){
                 log.info("用户未登录！");
                 writer.print(JsonHelper.obj2string(ServerResponse.createServerResponse(ReturnCode.USER_NOT_LOGIN.getCode(),ReturnCode.USER_NOT_LOGIN.getMsg())));
-            }else if(requestURL.matches("/manage") && userVo.getRole() != Constant.USER_ADMIN){
+            }else if(requestURL.contains("/manage") && (userVo.getRole() != Constant.USER_ADMIN)){
                 log.info("用户ID:{},无权限访问",userVo.getId());
                 writer.print(JsonHelper.obj2string(ServerResponse.createServerResponse(ReturnCode.USER_HAS_NO_PERMISSION.getCode(),ReturnCode.USER_HAS_NO_PERMISSION.getMsg())));
             }
