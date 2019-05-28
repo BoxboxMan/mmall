@@ -3,6 +3,10 @@ target
 
 logs
 
+#ÅäÖÃÎÄ¼ş
+application-dev.properties
+logback.xml
+
 # eclipse #
 .settings
 .project
