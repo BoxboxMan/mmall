@@ -83,7 +83,7 @@ public class ProductManageController {
      */
     @RequestMapping(value = "/upload",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<Map<String,String>> upload(MultipartFile file, HttpServletRequest request) throws BusinessException {
+    public ServerResponse<Map<String,String>> upload(MultipartFile file, HttpServletRequest request,String form) throws BusinessException {
         String path = request.getSession().getServletContext().getRealPath("upload");
         String targetFileName = fileService.upload(file, path, request);
         String url = ftpServerHttpPrefix + targetFileName;

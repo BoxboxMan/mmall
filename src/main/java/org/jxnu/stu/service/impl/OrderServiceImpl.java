@@ -506,7 +506,7 @@ public class OrderServiceImpl implements OrderService {
             orderItemVo.setOrderNo(orderItem.getOrderNo());
             orderItemVo.setProductId(orderItem.getProductId());
             orderItemVo.setProductName(orderItem.getProductName());
-            orderItemVo.setProductImage(PropertiesHelper.getProperties("ftp.server.http.prefix")+orderItem.getProductImage());
+            orderItemVo.setProductImage(orderItem.getProductImage());
             orderItemVo.setCurrentUnitPrice(orderItem.getCurrentUnitPrice());
             orderItemVo.setQuantity(orderItem.getQuantity());
             orderItemVo.setTotalPrice(orderItem.getTotalPrice());
