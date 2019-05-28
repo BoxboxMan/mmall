@@ -39,7 +39,7 @@ public class FileServiceImpl implements FileService {
         String loggingToken = CookieHelper.readLoggingToken(request);
         UserVo userVo = (UserVo) redisTemplate.opsForValue().get(loggingToken);
         String userId = String.valueOf(userVo.getId());
-        String uploadFileName = now + userId + extensionName;
+        String uploadFileName = now + "-" + userId + extensionName;
         File fileDir = new File(path);
         if(!fileDir.exists()){
             fileDir.setWritable(true);//设置写权限
