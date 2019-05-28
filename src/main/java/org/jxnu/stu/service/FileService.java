@@ -11,4 +11,6 @@ public interface FileService {
 
     String upload(MultipartFile file, String path, HttpServletRequest request) throws BusinessException;
 
+    String uploadImgByBinary(String imageBinary,String path,HttpServletRequest request) throws BusinessException;
+
 }

@@ -32,12 +32,14 @@ public enum ReturnCode implements CommonReturn{
     PRODUCT_NOT_EXIST(40000,"商品不存在"),
     PRODUCT_UPDATE_ERROR(40001,"更新商品信息失败"),
     PRODUCT_STOCK_NOT_ENOUGH(40002,"商品库存不足"),
+    PRODUCT_IMAGE_UPLOAD_FAILD(40003,"商品图片上传失败"),
 
     //start from 50000 to 60000 be used to description cart info
     CART_ADD_ERROR(50001,"购物车添加商品失败"),
     CART_UPDATE_ERRIR(50002,"更新购物车商品信息失败"),
     CART_DELETE_ERROR(50003,"购物车删除商品失败"),
     CART_CLEAR_FAILD(50004,"情况购物车失败"),
+    CART_IS_EMPTY(50005,"购物车为空"),
 
     //start from 60000 to 70000 be used to description shipping info
     SHIPPING_ADD_ERROR(60000,"添加收获地址信息失败"),

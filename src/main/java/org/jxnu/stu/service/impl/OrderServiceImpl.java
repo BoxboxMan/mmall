@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
@@ -265,11 +266,15 @@ public class OrderServiceImpl implements OrderService {
      * @return
      * @throws BusinessException
      */
+    @Transactional
     @Override
     public OrderVo create(Integer shippingId, Integer userId) throws BusinessException {
         //订单入库---由cart表得到对应商品，添加至order和orderItem表中，同时清空购物车和和product减库存
         ShippingVo shippingVo = shippingService.select(shippingId, userId);
         List<Cart> cartList = cartMapper.selectCheckedByUserId(userId);
+        if(cartList.size() < 1 || cartList == null){
+            throw new BusinessException(ReturnCode.CART_IS_EMPTY);
+        }
         List<OrderItem> orderItemList = this.assembleOrderItem(userId, cartList);
         Order order = this.assembleOrder(userId, shippingId, getPayment(orderItemList));
         //orderItem装填OrderNo
@@ -358,7 +363,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 用户根据订单号查询自身订单
+     * 用户根据订单号查询自身订
      * @param userId
      * @param orderNo
      * @return

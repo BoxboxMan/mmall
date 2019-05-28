@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication(scanBasePackages = "org.jxnu.stu")
 @MapperScan(basePackages = "org.jxnu.stu.dao")
 @RestController
-public class App extends SpringBootServletInitializer {
+public class App {
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(App.class);
-    }
+//    @Override
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+//        return builder.sources(App.class);
+//    }
 
     public static void main(String[] args )
     {

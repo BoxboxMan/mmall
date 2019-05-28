@@ -133,18 +133,19 @@ public class ProductManageController {
 
 
     /**
-     * 基于富文本 simditor
-     * @param file
+     * 基于富文本 simditor,上传图片必须为二进制流
+     * @param imageBinary
      * @param request
+     * @param response
      * @return
      * @throws BusinessException
      */
     @RequestMapping(value = "/richtext_img_upload",method = RequestMethod.POST)
     @ResponseBody
-    public Map richtextImgUpload(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws BusinessException {
+    public Map richtextImgUpload(@RequestParam(name = "postData") String imageBinary, HttpServletRequest request, HttpServletResponse response) throws BusinessException {
         Map<String,String> map = Maps.newHashMap();
         String path = request.getSession().getServletContext().getRealPath("upload");
-        String targetFileName = fileService.upload(file, path, request);
+        String targetFileName = fileService.uploadImgByBinary(imageBinary, path, request);
         String url = ftpServerHttpPrefix + targetFileName;
         map.put("success","true");
         map.put("msg","上传成功");
@@ -152,6 +153,5 @@ public class ProductManageController {
         response.addHeader("Access-Control-Allow-Headers","X-File-Name");
         return map;
     }
-
 
 }

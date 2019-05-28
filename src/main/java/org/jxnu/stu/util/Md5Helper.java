@@ -11,9 +11,9 @@ import java.security.NoSuchAlgorithmException;
 
 public class Md5Helper {
 
-    public static String encode(String password) throws BusinessException, NoSuchAlgorithmException, UnsupportedEncodingException {
+    public static String encode(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         if(password == null){
-            throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR,"密码不能为空");
+            return null;
         }
         //确定加密算法
         MessageDigest md5 = MessageDigest.getInstance("MD5");
