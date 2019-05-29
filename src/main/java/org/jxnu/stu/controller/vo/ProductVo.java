@@ -4,6 +4,7 @@ import org.jxnu.stu.dao.pojo.Product;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class ProductVo {
     private Integer id;
@@ -11,7 +12,7 @@ public class ProductVo {
     private String name;
     private String subtitle;
     private String mainImage;
-    private String subImages;
+    private List<String> subImages;
     private String detail;
     private BigDecimal price;
     private Integer stock;
@@ -77,11 +78,11 @@ public class ProductVo {
         this.mainImage = mainImage;
     }
 
-    public String getSubImages() {
+    public List<String> getSubImages() {
         return subImages;
     }
 
-    public void setSubImages(String subImages) {
+    public void setSubImages(List<String> subImages) {
         this.subImages = subImages;
     }
 
