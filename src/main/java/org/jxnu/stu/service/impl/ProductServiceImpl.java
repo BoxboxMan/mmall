@@ -1,6 +1,7 @@
 package org.jxnu.stu.service.impl;
 
 import com.alibaba.druid.util.StringUtils;
+import com.alipay.api.domain.ProductVOOptions;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.jxnu.stu.common.BusinessException;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -86,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
         if(product == null){
             throw new BusinessException(ReturnCode.PRODUCT_NOT_EXIST);
         }
-        ProductVo productVo = coverProductVoFromProductDoDetail(product);
+        ProductVo productVo = assembleProductVOFromProductDO(product);
         if(productVo == null){
             throw new BusinessException(ReturnCode.COVER_ERROR);
         }
@@ -94,14 +96,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PageInfo list(Integer pageNum, Integer pageSize) {
+    public PageInfo list(Integer pageNum, Integer pageSize) throws BusinessException {
         PageHelper.startPage(pageNum,pageSize);
         List<Product> products = productMapper.listAll();
+        List<ProductVo> productVoList = new ArrayList<>();
         for(Product productItem:products){
-            productItem.setMainImage(PropertiesHelper.getProperties("ftp.server.http.prefix"));
-            productItem.setSubImages(PropertiesHelper.getProperties("ftp.server.http.prefix"));
+            productVoList.add(this.assembleProductVOFromProductDO(productItem));
         }
-        PageInfo pageInfo = new PageInfo(products);
+        PageInfo pageInfo = new PageInfo(productVoList);
         return pageInfo;
     }
 
@@ -114,23 +116,24 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
-    public PageInfo search(String productName, Integer productId, Integer pageNum, Integer pageSize) {
+    public PageInfo search(String productName, Integer productId, Integer pageNum, Integer pageSize) throws BusinessException {
         PageHelper.startPage(pageNum,pageSize);
-        List<Product> products = new ArrayList<>();
-        if(productId != null){
+        List<Product> productList = new ArrayList<>();
+        List<ProductVo> productVoList = new ArrayList<>();
+        if(productId != null){// ID查询一定是唯一的
             Product product = productMapper.selectByPrimaryKey(productId);
-            products.add(product);
-            PageInfo pageInfo = new PageInfo(products);
+            productVoList.add(this.assembleProductVOFromProductDO(product));
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(productVoList);
             return pageInfo;
         }
-        List<Product> productList = new ArrayList<>();
+
         if(!StringUtils.isEmpty(productName)){
             productName = new StringBuilder().append("%").append(productName).append("%").toString();
             productList = productMapper.listProductByProductName(productName);
         }
-        List<ProductListVo> productVoList = new ArrayList<>();
         for(Product product:productList){
-            productVoList.add(coverProductVoFromProductDo(product));
+            productVoList.add(this.assembleProductVOFromProductDO(product));
         }
         PageInfo pageInfo = new PageInfo(productVoList);
         return pageInfo;
@@ -163,7 +166,7 @@ public class ProductServiceImpl implements ProductService {
      * @param product
      * @return
      */
-    public ProductListVo coverProductVoFromProductDo(Product product){
+    private ProductListVo coverProductVoFromProductDo(Product product){
         if(product == null){
             return null;
         }
@@ -173,18 +176,44 @@ public class ProductServiceImpl implements ProductService {
         return productListVo;
     }
 
+//    /**
+//     * 用于商品详情展示
+//     * @return
+//     */
+//    public ProductVo coverProductVoFromProductDoDetail(Product product) throws BusinessException {
+//        if(product == null){
+//            return null;
+//        }
+//        ProductVo productVo = new ProductVo();
+//        BeanUtils.copyProperties(product, productVo);
+//        productVo.setMainImage(PropertiesHelper.getProperties("ftp.server.http.prefix")+product.getMainImage());
+//        productVo.setSubImages(PropertiesHelper.getProperties("ftp.server.http.prefix")+product.getSubImages());
+//        productVo.setCreateTime(DateTimeHelper.dateToString(product.getCreateTime()));
+//        productVo.setUpdateTime(DateTimeHelper.dateToString(product.getUpdateTime()));
+//        return productVo;
+//    }
+
+
     /**
-     * 用于商品详情展示
+     * 组装productVo，主图、子图、时间日期的转换
+     * @param product
      * @return
+     * @throws BusinessException
      */
-    public ProductVo coverProductVoFromProductDoDetail(Product product) throws BusinessException {
+    private ProductVo assembleProductVOFromProductDO(Product product) throws BusinessException {
         if(product == null){
             return null;
         }
         ProductVo productVo = new ProductVo();
         BeanUtils.copyProperties(product, productVo);
         productVo.setMainImage(PropertiesHelper.getProperties("ftp.server.http.prefix")+product.getMainImage());
-        productVo.setSubImages(PropertiesHelper.getProperties("ftp.server.http.prefix")+product.getSubImages());
+        String subImages = product.getSubImages();
+        String[] subImage = subImages.split(",");
+        List<String> subImagesList = new ArrayList<>();
+        for(int i=0;i<subImage.length;i++){
+            subImagesList.add(PropertiesHelper.getProperties("ftp.server.http.prefix") + subImage[i]);
+        }
+        productVo.setSubImages(subImagesList);
         productVo.setCreateTime(DateTimeHelper.dateToString(product.getCreateTime()));
         productVo.setUpdateTime(DateTimeHelper.dateToString(product.getUpdateTime()));
         return productVo;
