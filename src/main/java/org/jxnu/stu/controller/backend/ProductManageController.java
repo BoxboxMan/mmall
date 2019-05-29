@@ -119,7 +119,7 @@ public class ProductManageController {
      * @param product
      * @return
      */
-    @RequestMapping(value = "/save",method = RequestMethod.GET)
+    @RequestMapping(value = "/save",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse save(@Valid Product product,HttpServletRequest request) throws BusinessException {
         ValidationResult validate = validation.validate(product);

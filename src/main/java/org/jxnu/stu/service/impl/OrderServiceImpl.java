@@ -272,6 +272,9 @@ public class OrderServiceImpl implements OrderService {
         //订单入库---由cart表得到对应商品，添加至order和orderItem表中，同时清空购物车和和product减库存
         ShippingVo shippingVo = shippingService.select(shippingId, userId);
         List<Cart> cartList = cartMapper.selectCheckedByUserId(userId);
+        if(cartList.size() <1 || cartList == null){
+            throw new BusinessException(ReturnCode.CART_IS_EMPTY);
+        }
         List<OrderItem> orderItemList = this.assembleOrderItem(userId, cartList);
         Order order = this.assembleOrder(userId, shippingId, getPayment(orderItemList));
         //orderItem装填OrderNo

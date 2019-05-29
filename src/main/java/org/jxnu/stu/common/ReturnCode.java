@@ -38,6 +38,7 @@ public enum ReturnCode implements CommonReturn{
     CART_UPDATE_ERRIR(50002,"更新购物车商品信息失败"),
     CART_DELETE_ERROR(50003,"购物车删除商品失败"),
     CART_CLEAR_FAILD(50004,"情况购物车失败"),
+    CART_IS_EMPTY(50005,"购物车为空"),
 
     //start from 60000 to 70000 be used to description shipping info
     SHIPPING_ADD_ERROR(60000,"添加收获地址信息失败"),

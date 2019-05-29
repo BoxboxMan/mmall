@@ -43,7 +43,7 @@ public class CategoryManageController {
      * @return
      * @throws BusinessException
      */
-    @RequestMapping(value = "/get_category", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_category", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<List<CategoryVo>> getCategory(@RequestParam(defaultValue = "0") Integer categoryId, HttpServletRequest request) throws BusinessException {
         List<CategoryBo> categoryBoList = categoryService.getChildrenParallelCategory(categoryId);
