@@ -449,11 +449,9 @@
   </select>
 
   <update id="updateStatusByOrderNo" parameterType="map">
-    update
-    mmall_order
-    set status = #{status}
-    where order_no = #{orderNo},
-    update_time = now()
+    update mmall_order
+    set status = #{status},update_time = now()
+    where order_no = #{orderNo}
   </update>
 
   <select id="listAll" resultMap="BaseResultMap">
@@ -462,7 +460,12 @@
     from mmall_order
   </select>
 
-
+  <select id="listAllByStatus" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_order
+    where status = #{status}
+  </select>
 
 
 
