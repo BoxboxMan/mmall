@@ -1,11 +1,11 @@
-package org.jxnu.stu.common;
+package org.jxnu.stu.schedule;
 
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
+import org.jxnu.stu.common.Constant;
 import org.jxnu.stu.dao.OrderMapper;
 import org.jxnu.stu.dao.pojo.Order;
-import org.jxnu.stu.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -22,15 +21,10 @@ import java.util.concurrent.TimeUnit;
 public class ScheduleTask {
 
     @Autowired
-    private OrderService orderService;
-
-    @Autowired
     private OrderMapper orderMapper;
-
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
 
-    //整点执行定时任务0 0 0/1 * * ?
 
     @Scheduled(cron = "0 0/1 * * * ?")
     public void closeOrderTask(){
