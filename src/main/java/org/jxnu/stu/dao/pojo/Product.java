@@ -99,7 +99,6 @@ public class Product {
      *
      * @mbg.generated Sat Mar 30 17:46:04 CST 2019
      */
-    @NotNull(message = "请填写商品状态")
     private Integer status;
 
     /**

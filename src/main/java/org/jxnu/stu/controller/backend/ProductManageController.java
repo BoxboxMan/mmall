@@ -122,7 +122,7 @@ public class ProductManageController {
      */
     @RequestMapping(value = "/save",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse save(@Valid Product product,HttpServletRequest request) throws BusinessException {
+    public ServerResponse save(@Valid ProductVo product,HttpServletRequest request) throws BusinessException {
         ValidationResult validate = validation.validate(product);
         if(validate.isHasError()){
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR,validate.getErrMsg());
@@ -135,7 +135,7 @@ public class ProductManageController {
 
     /**
      * 基于富文本 simditor
-     * @param file
+     * @param img
      * @param request
      * @return
      * @throws BusinessException

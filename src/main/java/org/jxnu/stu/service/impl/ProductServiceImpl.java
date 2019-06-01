@@ -86,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
         if(product == null){
             throw new BusinessException(ReturnCode.PRODUCT_NOT_EXIST);
         }
-        ProductVo productVo = coverProductVoFromProductDoDetail(product);
+        ProductVo productVo = assemebleProductVoFromProductDo(product);
         if(productVo == null){
             throw new BusinessException(ReturnCode.COVER_ERROR);
         }
@@ -94,14 +94,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PageInfo list(Integer pageNum, Integer pageSize) {
+    public PageInfo list(Integer pageNum, Integer pageSize) throws BusinessException {
         PageHelper.startPage(pageNum,pageSize);
         List<Product> products = productMapper.listAll();
+        List<ProductVo> productVoList = new ArrayList<>();
         for(Product productItem:products){
-            productItem.setMainImage(PropertiesHelper.getProperties("ftp.server.http.prefix") + productItem.getMainImage());
-            productItem.setSubImages(PropertiesHelper.getProperties("ftp.server.http.prefix") + productItem.getSubImages());
+            productVoList.add(this.assemebleProductVoFromProductDo(productItem));
         }
-        PageInfo pageInfo = new PageInfo(products);
+        PageInfo pageInfo = new PageInfo(productVoList);
         return pageInfo;
     }
 
@@ -145,12 +145,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void save(Product product) throws BusinessException {
+    public void save(ProductVo product) throws BusinessException {
+        Product productDo = new Product();
+        BeanUtils.copyProperties(product,productDo);
+        List<String> subImages = product.getSubImages();
+        StringBuffer subImagesString = new StringBuffer();
+        for(String subImage:subImages){
+            String str = subImagesString.length() == 0 ? subImage : "," + subImage;
+            subImagesString.append(str);
+        }
+        productDo.setSubImages(new String(subImagesString));
         Integer result = null;
         if(product.getId() == null){
-            result = productMapper.insertSelective(product);
+            result = productMapper.insertSelective(productDo);
         }else{
-            result = productMapper.updateByPrimaryKeySelective(product);
+            result = productMapper.updateByPrimaryKeySelective(productDo);
         }
         if(result < 1){
             throw new BusinessException(ReturnCode.PRODUCT_UPDATE_ERROR,"新增或更新产品信息失败");
@@ -163,13 +172,13 @@ public class ProductServiceImpl implements ProductService {
      * @param product
      * @return
      */
-    public ProductListVo coverProductVoFromProductDo(Product product){
+    private ProductListVo coverProductVoFromProductDo(Product product){
         if(product == null){
             return null;
         }
         ProductListVo productListVo = new ProductListVo();
         BeanUtils.copyProperties(product, productListVo);
-        productListVo.setMainImage(PropertiesHelper.getProperties("ftp.server.http.prefix")+product.getMainImage());
+        productListVo.setMainImage(PropertiesHelper.getProperties("ftp.server.http.prefix") + product.getMainImage());
         return productListVo;
     }
 
@@ -177,16 +186,24 @@ public class ProductServiceImpl implements ProductService {
      * 用于商品详情展示
      * @return
      */
-    public ProductVo coverProductVoFromProductDoDetail(Product product) throws BusinessException {
+    private ProductVo assemebleProductVoFromProductDo(Product product) throws BusinessException {
         if(product == null){
             return null;
         }
         ProductVo productVo = new ProductVo();
-        BeanUtils.copyProperties(product, productVo);
-        productVo.setMainImage(PropertiesHelper.getProperties("ftp.server.http.prefix")+product.getMainImage());
-        productVo.setSubImages(PropertiesHelper.getProperties("ftp.server.http.prefix")+product.getSubImages());
+        BeanUtils.copyProperties(product,productVo);
         productVo.setCreateTime(DateTimeHelper.dateToString(product.getCreateTime()));
         productVo.setUpdateTime(DateTimeHelper.dateToString(product.getUpdateTime()));
+        //获取图片服务器前缀
+        String imagePrefix = PropertiesHelper.getProperties("ftp.server.http.prefix");
+        productVo.setMainImage(imagePrefix + product.getMainImage());
+        String subImages = product.getSubImages();
+        String[] subImagesArray = subImages.split(",");
+        List<String> subImagesList = new ArrayList<>();
+        for(int i=0;i<subImagesArray.length;i++){
+            subImagesList.add(imagePrefix + subImagesArray[i]);
+        }
+        productVo.setSubImages(subImagesList);
         return productVo;
     }
 }

@@ -21,6 +21,6 @@ public interface ProductService {
 
     void setSaleStatus(Integer productId, Integer status) throws BusinessException;
 
-    void save(Product product) throws BusinessException;
+    void save(ProductVo product) throws BusinessException;
 
 }

@@ -2,20 +2,36 @@ package org.jxnu.stu.controller.vo;
 
 import org.jxnu.stu.dao.pojo.Product;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 public class ProductVo {
     private Integer id;
+
+    @NotNull(message = "请填写商品分类信息")
     private Integer categoryId;
+
+    @NotEmpty(message = "请填写商品名称")
     private String name;
+
+    @NotEmpty(message = "请填写商品子标题")
     private String subtitle;
+
     private String mainImage;
+
     private List<String> subImages;
+
     private String detail;
+
+    @NotNull(message = "请填写商品价格")
     private BigDecimal price;
+
+    @NotNull(message = "请填写商品库存")
     private Integer stock;
+
     private Integer status;
     private String createTime;
     private String updateTime;
