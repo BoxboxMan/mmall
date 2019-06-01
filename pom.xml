@@ -250,6 +250,13 @@
             <version>3.3.4.ALL</version>
         </dependency>
 
+        <!--mq-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+            <version>2.1.4.RELEASE</version>
+        </dependency>
+
         <!-- 将当面付jar包打包 -->
         <dependency>
             <groupId>com.alibaba.alipay</groupId>
