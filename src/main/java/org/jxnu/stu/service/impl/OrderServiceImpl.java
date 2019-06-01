@@ -272,7 +272,7 @@ public class OrderServiceImpl implements OrderService {
         //订单入库---由cart表得到对应商品，添加至order和orderItem表中，同时清空购物车和和product减库存
         ShippingVo shippingVo = shippingService.select(shippingId, userId);
         List<Cart> cartList = cartMapper.selectCheckedByUserId(userId);
-        if(cartList.size() < 1 || cartList == null){
+        if(cartList.size() <1 || cartList == null){
             throw new BusinessException(ReturnCode.CART_IS_EMPTY);
         }
         List<OrderItem> orderItemList = this.assembleOrderItem(userId, cartList);
@@ -363,7 +363,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 用户根据订单号查询自身订
+     * 用户根据订单号查询自身订单
      * @param userId
      * @param orderNo
      * @return
@@ -511,7 +511,7 @@ public class OrderServiceImpl implements OrderService {
             orderItemVo.setOrderNo(orderItem.getOrderNo());
             orderItemVo.setProductId(orderItem.getProductId());
             orderItemVo.setProductName(orderItem.getProductName());
-            orderItemVo.setProductImage(orderItem.getProductImage());
+            orderItemVo.setProductImage(PropertiesHelper.getProperties("ftp.server.http.prefix")+orderItem.getProductImage());
             orderItemVo.setCurrentUnitPrice(orderItem.getCurrentUnitPrice());
             orderItemVo.setQuantity(orderItem.getQuantity());
             orderItemVo.setTotalPrice(orderItem.getTotalPrice());

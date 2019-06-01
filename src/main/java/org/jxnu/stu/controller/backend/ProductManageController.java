@@ -2,7 +2,6 @@ package org.jxnu.stu.controller.backend;
 
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
-import org.apache.ibatis.annotations.Param;
 import org.jxnu.stu.common.*;
 import org.jxnu.stu.controller.vo.ProductVo;
 import org.jxnu.stu.controller.vo.UserVo;
@@ -23,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,6 +75,25 @@ public class ProductManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),pageInfo);
     }
 
+    /**
+     * 上传图片接口
+     * @param file
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
+    @RequestMapping(value = "/upload",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<Map<String,String>> upload(MultipartFile file, HttpServletRequest request) throws BusinessException {
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        String targetFileName = fileService.upload(file, path, request);
+        String url = ftpServerHttpPrefix + targetFileName;
+        Map<String,String> fileMap = new HashMap<>();
+        fileMap.put("uri",targetFileName);
+        fileMap.put("url",url);
+        return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),fileMap);
+    }
+
     @RequestMapping(value = "/detail",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<ProductVo> detail(Integer productId,HttpServletRequest request) throws BusinessException {
@@ -103,9 +120,9 @@ public class ProductManageController {
      * @param product
      * @return
      */
-    @RequestMapping(value = "/save",method = RequestMethod.GET)
+    @RequestMapping(value = "/save",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse save(@Valid Product product,HttpServletRequest request) throws BusinessException {
+    public ServerResponse save(@Valid ProductVo product,HttpServletRequest request) throws BusinessException {
         ValidationResult validate = validation.validate(product);
         if(validate.isHasError()){
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR,validate.getErrMsg());
@@ -115,37 +132,20 @@ public class ProductManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),msg);
     }
 
-    /**
-     * 上传图片接口
-     * @param file
-     * @param request
-     * @return
-     * @throws BusinessException
-     */
-    @RequestMapping(value = "/upload",method = RequestMethod.POST)
-    @ResponseBody
-    public ServerResponse<Map<String,String>> upload(MultipartFile file, HttpServletRequest request) throws BusinessException {
-        String path = request.getSession().getServletContext().getRealPath("upload");
-        String targetFileName = fileService.upload(file, path, request);
-        String url = ftpServerHttpPrefix + targetFileName;
-        Map<String,String> fileMap = new HashMap<>();
-        fileMap.put("uri",targetFileName);
-        fileMap.put("url",url);
-        return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),fileMap);
-    }
 
     /**
-     * 基于富文本 simditor,上传图片必须为二进制流
+     * 基于富文本 simditor
+     * @param img
      * @param request
      * @return
      * @throws BusinessException
      */
     @RequestMapping(value = "/richtext_img_upload",method = RequestMethod.POST)
     @ResponseBody
-    public Map richtextImgUpload(@RequestParam(name = "img") MultipartFile file, HttpServletRequest request,HttpServletResponse response) throws BusinessException {
+    public Map richtextImgUpload(MultipartFile img, HttpServletRequest request, HttpServletResponse response) throws BusinessException {
         Map<String,String> map = Maps.newHashMap();
         String path = request.getSession().getServletContext().getRealPath("upload");
-        String targetFileName = fileService.upload(file, path, request);
+        String targetFileName = fileService.upload(img, path, request);
         String url = ftpServerHttpPrefix + targetFileName;
         map.put("success","true");
         map.put("msg","上传成功");
@@ -153,5 +153,6 @@ public class ProductManageController {
         response.addHeader("Access-Control-Allow-Headers","X-File-Name");
         return map;
     }
+
 
 }
