@@ -98,8 +98,8 @@ public class ProductServiceImpl implements ProductService {
         PageHelper.startPage(pageNum,pageSize);
         List<Product> products = productMapper.listAll();
         for(Product productItem:products){
-            productItem.setMainImage(PropertiesHelper.getProperties("ftp.server.http.prefix"));
-            productItem.setSubImages(PropertiesHelper.getProperties("ftp.server.http.prefix"));
+            productItem.setMainImage(PropertiesHelper.getProperties("ftp.server.http.prefix") + productItem.getMainImage());
+            productItem.setSubImages(PropertiesHelper.getProperties("ftp.server.http.prefix") + productItem.getSubImages());
         }
         PageInfo pageInfo = new PageInfo(products);
         return pageInfo;

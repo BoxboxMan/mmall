@@ -8,6 +8,7 @@ import org.jxnu.stu.controller.vo.UserVo;
 import org.jxnu.stu.dao.pojo.Product;
 import org.jxnu.stu.service.FileService;
 import org.jxnu.stu.service.ProductService;
+import org.jxnu.stu.util.FTPHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -141,10 +142,10 @@ public class ProductManageController {
      */
     @RequestMapping(value = "/richtext_img_upload",method = RequestMethod.POST)
     @ResponseBody
-    public Map richtextImgUpload(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws BusinessException {
+    public Map richtextImgUpload(MultipartFile img, HttpServletRequest request, HttpServletResponse response) throws BusinessException {
         Map<String,String> map = Maps.newHashMap();
         String path = request.getSession().getServletContext().getRealPath("upload");
-        String targetFileName = fileService.upload(file, path, request);
+        String targetFileName = fileService.upload(img, path, request);
         String url = ftpServerHttpPrefix + targetFileName;
         map.put("success","true");
         map.put("msg","上传成功");
