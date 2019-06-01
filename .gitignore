@@ -3,7 +3,7 @@ target
 
 logs
 
-#ÅäÖÃÎÄ¼ş
+#ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
 application-dev.properties
 logback.xml
 
@@ -56,4 +56,3 @@ a_little_config_pro.txt
 dev_plan.txt
 
 logback.xml
-zfbinfo.properties
