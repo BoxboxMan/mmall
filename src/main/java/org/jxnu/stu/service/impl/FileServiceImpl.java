@@ -7,6 +7,7 @@ import org.jxnu.stu.common.ReturnCode;
 import org.jxnu.stu.controller.vo.ProductVo;
 import org.jxnu.stu.controller.vo.UserVo;
 import org.jxnu.stu.service.FileService;
+import org.jxnu.stu.util.Base64Helper;
 import org.jxnu.stu.util.CookieHelper;
 import org.jxnu.stu.util.DateTimeHelper;
 import org.jxnu.stu.util.FTPHelper;
@@ -19,7 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -36,7 +39,7 @@ public class FileServiceImpl implements FileService {
         String loggingToken = CookieHelper.readLoggingToken(request);
         UserVo userVo = (UserVo) redisTemplate.opsForValue().get(loggingToken);
         String userId = String.valueOf(userVo.getId());
-        String uploadFileName = now + userId + extensionName;
+        String uploadFileName = now + "-" + userId + extensionName;
         File fileDir = new File(path);
         if(!fileDir.exists()){
             fileDir.setWritable(true);//设置写权限
@@ -51,7 +54,37 @@ public class FileServiceImpl implements FileService {
             targetFile.delete();
         } catch (IOException e) {
             e.printStackTrace();
-            throw new BusinessException(ReturnCode.ERROR,"上传文件异常");
+            throw new BusinessException(ReturnCode.ERROR,"上传文件到服务器传输异常");
+        }
+        return targetFile.getName();
+    }
+
+    @Override
+    public String uploadImgByBinary(String imageBinary, String path, HttpServletRequest request) throws BusinessException {
+        String now = DateTimeHelper.dateToString(new Date()).replaceAll("-", "").replaceAll(" ", "").replaceAll(".", "");
+        String loggingToken = CookieHelper.readLoggingToken(request);
+        UserVo userVo = (UserVo) redisTemplate.opsForValue().get(loggingToken);
+        String userId = String.valueOf(userVo.getId());
+        String uploadFileName = now + userId + ".img";
+        File fileDir = new File(path);
+        if(!fileDir.exists()){
+            fileDir.setWritable(true);
+            fileDir.mkdirs();
+        }
+        File targetFile = Base64Helper.binary2Image(imageBinary,fileDir,uploadFileName);
+        if(targetFile == null){
+            throw new BusinessException(ReturnCode.PRODUCT_IMAGE_UPLOAD_FAILD);
+        }
+        List<File> uploadFileList = new ArrayList<>();
+        uploadFileList.add(targetFile);
+        try {
+            //上传文件
+            FTPHelper.uploadFile(uploadFileList);
+            //上传完成后删除本地文件
+            targetFile.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new BusinessException(ReturnCode.ERROR,"上传文件到服务器传输异常");
         }
         return targetFile.getName();
     }

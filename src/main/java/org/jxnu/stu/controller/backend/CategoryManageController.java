@@ -52,6 +52,7 @@ public class CategoryManageController {
             CategoryVo categoryVo = coverCategoryVoFromCategoryBo(categoryBo);
             categoryVoList.add(categoryVo);
         }
+        List<List<Category>> list;
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(), categoryVoList);
     }
 

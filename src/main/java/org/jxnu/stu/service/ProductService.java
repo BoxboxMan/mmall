@@ -15,9 +15,9 @@ public interface ProductService {
 
     ProductVo detail(Integer productId) throws BusinessException;
 
-    PageInfo list(Integer pageNum, Integer pageSize);
+    PageInfo list(Integer pageNum, Integer pageSize) throws BusinessException;
 
-    PageInfo search(String productName, Integer productId, Integer pageNum, Integer pageSize);
+    PageInfo search(String productName, Integer productId, Integer pageNum, Integer pageSize) throws BusinessException;
 
     void setSaleStatus(Integer productId, Integer status) throws BusinessException;
 

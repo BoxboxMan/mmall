@@ -40,7 +40,7 @@ public class OrderController {
 
 
     /**
-     * 创建订单，并生产二维码
+     * 支付订单，并生产二维码
      * @param orderNo
      * @param request
      * @return

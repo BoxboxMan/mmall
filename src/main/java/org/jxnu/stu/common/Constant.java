@@ -26,7 +26,9 @@ public class Constant {
     public static final int UNCHECKED = 0;
 
     public interface Time{
-        public int SESSION_TIME_OUT = 60 * 30;
+
+        int SESSION_TIME_OUT = 60 * 30;//秒
+        int LOCK_ORDER_CLOSE = 10 * 1000;//毫秒
     }
 
     public interface ProductListOrderBy{
@@ -35,7 +37,7 @@ public class Constant {
 
     public enum  OrderStatus{
         ORDER_CANCLE(0,"已取消"),
-        ORDER_NOT_PAY(10,"代付款"),
+        ORDER_NOT_PAY(10,"待付款"),
         ORDER_PAYED(20,"已付款"),
         ORDER_SHIPPED(40,"已发货"),
         ORDER_SUCCESS(50,"订单已完成"),
@@ -114,6 +116,11 @@ public class Constant {
 
         String RESPONSE_SUCCESS = "success";
         String RESPONSE_FAILED = "failed";
+    }
+
+    public interface DistributedLock{
+        String LOCK_ORDER_TASK = "LOCK_ORDER_TASK";
+
     }
 
     public static final boolean CATEGORY_NORMAL = true;

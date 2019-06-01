@@ -104,4 +104,6 @@ public interface OrderMapper {
     int updateStatusByOrderNo(@Param("orderNo") Long orderNo,@Param("status") Integer status);
 
     List<Order> listAll();
+
+    List<Order> listAllByStatus(Integer status);
 }
