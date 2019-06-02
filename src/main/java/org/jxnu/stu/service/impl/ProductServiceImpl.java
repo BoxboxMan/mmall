@@ -148,12 +148,17 @@ public class ProductServiceImpl implements ProductService {
     public void save(ProductVo product) throws BusinessException {
         Product productDo = new Product();
         BeanUtils.copyProperties(product,productDo);
+        //传入数据库的应该为图片的原名，不能带http://
+        productDo.getMainImage().replaceAll(PropertiesHelper.getProperties("ftp.server.http.prefix"),"");
         List<String> subImages = product.getSubImages();
         StringBuffer subImagesString = new StringBuffer();
         for(String subImage:subImages){
+            //删除图片带的http://xxx，以及双引号
+            subImage = subImage.replaceAll(PropertiesHelper.getProperties("ftp.server.http.prefix"),"").replace("\"","");
             String str = subImagesString.length() == 0 ? subImage : "," + subImage;
             subImagesString.append(str);
         }
+        subImagesString.deleteCharAt(0).deleteCharAt(subImagesString.length()-1);//删除前后的数组括号（因为前段传值问题引起的)
         productDo.setSubImages(new String(subImagesString));
         Integer result = null;
         if(product.getId() == null){
