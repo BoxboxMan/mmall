@@ -52,14 +52,4 @@ public class CookieHelper {
         }
     }
 
-//    public static void writeCookie(String cookieName,String cookieValue,HttpServletResponse response){
-//        Cookie cookie = new Cookie(cookieName,cookieValue);
-//        cookie.setDomain(COOKIE_DOMAIN);
-//        cookie.setPath("/");
-//        cookie.setMaxAge(60 * 60 * 24 * 30);
-//        cookie.setHttpOnly(true);
-//        log.info("write cookie cookieName:{}    cookieValue:{}",cookieName,cookieValue);
-//        response.addCookie(cookie);
-//    }
-
 }
