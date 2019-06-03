@@ -148,6 +148,9 @@ public class ProductServiceImpl implements ProductService {
     public void save(ProductVo product) throws BusinessException {
         Product productDo = new Product();
         BeanUtils.copyProperties(product,productDo);
+        //日期类型转换
+        productDo.setCreateTime(DateTimeHelper.strToDate(product.getCreateTime()));
+        productDo.setUpdateTime(DateTimeHelper.strToDate(product.getUpdateTime()));
         //传入数据库的应该为图片的原名，不能带http://
         productDo.setMainImage(productDo.getMainImage().replaceAll(PropertiesHelper.getProperties("ftp.server.http.prefix"),""));
         List<String> subImages = product.getSubImages();
