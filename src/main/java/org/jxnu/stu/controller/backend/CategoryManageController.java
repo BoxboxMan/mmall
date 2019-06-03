@@ -56,7 +56,7 @@ public class CategoryManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(), categoryVoList);
     }
 
-    @RequestMapping(value = "/add_category", method = RequestMethod.GET)
+    @RequestMapping(value = "/add_category", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> addCategory(@RequestParam(defaultValue = "0") Integer parentId, String categoryName, HttpSession session) throws BusinessException {
         if (StringUtils.isEmpty(categoryName)) {
@@ -66,7 +66,7 @@ public class CategoryManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(), "添加品类成功");
     }
 
-    @RequestMapping(value = "/set_category_name", method = RequestMethod.GET)
+    @RequestMapping(value = "/set_category_name", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> setCategoryName(Integer categoryId, String categoryName, HttpSession session) throws BusinessException {
         if (categoryId == null) {
@@ -79,7 +79,7 @@ public class CategoryManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(), "更新品类信息成功");
     }
 
-    @RequestMapping(value = "/get_deep_category", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_deep_category", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<List<CategoryVo>> getDeepCategory(Integer categoryId, HttpSession session) throws BusinessException {
         if (categoryId == null) {
