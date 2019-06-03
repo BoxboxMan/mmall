@@ -149,7 +149,7 @@ public class ProductServiceImpl implements ProductService {
         Product productDo = new Product();
         BeanUtils.copyProperties(product,productDo);
         //传入数据库的应该为图片的原名，不能带http://
-        productDo.getMainImage().replaceAll(PropertiesHelper.getProperties("ftp.server.http.prefix"),"");
+        productDo.setMainImage(productDo.getMainImage().replaceAll(PropertiesHelper.getProperties("ftp.server.http.prefix"),""));
         List<String> subImages = product.getSubImages();
         StringBuffer subImagesString = new StringBuffer();
         for(String subImage:subImages){
