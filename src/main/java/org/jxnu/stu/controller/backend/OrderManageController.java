@@ -14,15 +14,13 @@ import org.jxnu.stu.util.CookieHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 @RequestMapping("/manage/order")
 @Controller
+@CrossOrigin(allowCredentials = "true",allowedHeaders = {"*"})
 public class OrderManageController {
 
     @Autowired
