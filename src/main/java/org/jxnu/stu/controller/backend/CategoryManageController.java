@@ -15,10 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -27,6 +24,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/manage/category")
+@CrossOrigin(allowCredentials = "true",allowedHeaders = {"*"})
 public class CategoryManageController {
 
     @Autowired
@@ -56,7 +54,7 @@ public class CategoryManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(), categoryVoList);
     }
 
-    @RequestMapping(value = "/add_category", method = RequestMethod.GET)
+    @RequestMapping(value = "/add_category", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> addCategory(@RequestParam(defaultValue = "0") Integer parentId, String categoryName, HttpSession session) throws BusinessException {
         if (StringUtils.isEmpty(categoryName)) {
@@ -66,7 +64,7 @@ public class CategoryManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(), "添加品类成功");
     }
 
-    @RequestMapping(value = "/set_category_name", method = RequestMethod.GET)
+    @RequestMapping(value = "/set_category_name", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> setCategoryName(Integer categoryId, String categoryName, HttpSession session) throws BusinessException {
         if (categoryId == null) {
@@ -79,7 +77,7 @@ public class CategoryManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(), "更新品类信息成功");
     }
 
-    @RequestMapping(value = "/get_deep_category", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_deep_category", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<List<CategoryVo>> getDeepCategory(Integer categoryId, HttpSession session) throws BusinessException {
         if (categoryId == null) {
