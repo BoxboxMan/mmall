@@ -183,7 +183,9 @@ public class ProductServiceImpl implements ProductService {
         }
         ProductListVo productListVo = new ProductListVo();
         BeanUtils.copyProperties(product, productListVo);
-        productListVo.setMainImage(PropertiesHelper.getProperties("ftp.server.http.prefix") + product.getMainImage());
+        if(!StringUtils.isEmpty(productListVo.getMainImage())){
+            productListVo.setMainImage(PropertiesHelper.getProperties("ftp.server.http.prefix") + product.getMainImage());
+        }
         return productListVo;
     }
 
@@ -201,14 +203,18 @@ public class ProductServiceImpl implements ProductService {
         productVo.setUpdateTime(DateTimeHelper.dateToString(product.getUpdateTime()));
         //获取图片服务器前缀
         String imagePrefix = PropertiesHelper.getProperties("ftp.server.http.prefix");
-        productVo.setMainImage(imagePrefix + product.getMainImage());
-        String subImages = product.getSubImages();
-        String[] subImagesArray = subImages.split(",");
-        List<String> subImagesList = new ArrayList<>();
-        for(int i=0;i<subImagesArray.length;i++){
-            subImagesList.add(imagePrefix + subImagesArray[i]);
+        if(!StringUtils.isEmpty(product.getMainImage())){//图片不为空才能加前缀返回
+            productVo.setMainImage(imagePrefix + product.getMainImage());
         }
-        productVo.setSubImages(subImagesList);
+        String subImages = product.getSubImages();
+        if(!StringUtils.isEmpty(subImages)){
+            String[] subImagesArray = subImages.split(",");
+            List<String> subImagesList = new ArrayList<>();
+            for(int i=0;i<subImagesArray.length;i++){
+                subImagesList.add(imagePrefix + subImagesArray[i]);
+            }
+            productVo.setSubImages(subImagesList);
+        }
         return productVo;
     }
 }
