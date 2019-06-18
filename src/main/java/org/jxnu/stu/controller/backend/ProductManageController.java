@@ -12,10 +12,7 @@ import org.jxnu.stu.util.FTPHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +24,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/manage/product")
+@CrossOrigin(allowCredentials = "true",allowedHeaders = {"*"})
 public class ProductManageController {
 
     @Autowired
@@ -66,7 +64,7 @@ public class ProductManageController {
      * @return
      * @throws BusinessException
      */
-    @RequestMapping(value = "/search",method = RequestMethod.GET)
+    @RequestMapping(value = "/search",method = RequestMethod.POST)
     @ResponseBody
     public  ServerResponse<PageInfo> search(String productName,Integer productId,@RequestParam(defaultValue = "1") Integer pageNum,
                                             @RequestParam(defaultValue = "10") Integer pageSize, HttpSession session) throws BusinessException {
