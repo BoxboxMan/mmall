@@ -24,7 +24,6 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/manage/category")
-@CrossOrigin(allowCredentials = "true",allowedHeaders = {"*"})
 public class CategoryManageController {
 
     @Autowired
