@@ -94,7 +94,7 @@ public class ProductManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),fileMap);
     }
 
-    @RequestMapping(value = "/detail",method = RequestMethod.GET)
+    @RequestMapping(value = "/detail",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<ProductVo> detail(Integer productId,HttpServletRequest request) throws BusinessException {
         if(productId == null){
@@ -104,7 +104,7 @@ public class ProductManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),productVo);
     }
 
-    @RequestMapping(value = "/set_sale_status",method = RequestMethod.GET)
+    @RequestMapping(value = "/set_sale_status",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> setSaleStatus(Integer productId, Integer status,HttpServletRequest request) throws BusinessException {
         if(productId == null || status == null){
