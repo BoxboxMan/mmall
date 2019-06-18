@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/product")
-@CrossOrigin(allowCredentials = "true",allowedHeaders = {"*"})
 public class ProductController {
 
     @Autowired

@@ -28,7 +28,6 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping("/order")
-@CrossOrigin(allowCredentials = "true",allowedHeaders = {"*"})
 public class OrderController {
 
     @Autowired
