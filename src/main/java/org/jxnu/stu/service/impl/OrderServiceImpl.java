@@ -317,7 +317,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 获取当前用户所有的订单详情
+     * 用户：获取当前用户所有的订单信息（不包含订单内产品详情等）
      * @param userId
      * @param pageSize
      * @param pageNum
@@ -363,7 +363,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 用户根据订单号查询自身订单
+     * 用户：根据订单号查询自身某个订单详情
      * @param userId
      * @param orderNo
      * @return

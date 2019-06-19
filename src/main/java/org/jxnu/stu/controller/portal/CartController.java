@@ -31,6 +31,12 @@ public class CartController {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    /**
+     * 获取当前用户的购物车信息
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/list",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<CartVo> list(HttpServletRequest request) throws BusinessException {
@@ -39,6 +45,14 @@ public class CartController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),cartVo);
     }
 
+    /**
+     * 当前登陆用户添加商品和对应数量到自己的购物车中
+     * @param productId
+     * @param count
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/add",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<CartVo> add(Integer productId,Integer count,HttpServletRequest request) throws BusinessException {
@@ -50,6 +64,14 @@ public class CartController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),cartVo);
     }
 
+    /**
+     * 当前登陆用户修改购物车中指定商品的数量，不允许修改数量到0，想要删除必须调delete_product
+     * @param productId
+     * @param count
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/update",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<CartVo> update(Integer productId,Integer count,HttpServletRequest request) throws BusinessException {
@@ -61,6 +83,13 @@ public class CartController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),cartVo);
     }
 
+    /**
+     * 删除指定的多个商品种类。
+     * @param productIds
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/delete_product",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<CartVo> deleteProduct(String productIds,HttpServletRequest request) throws BusinessException {
@@ -72,6 +101,11 @@ public class CartController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),cartVo);
     }
 
+    /**
+     * 清空当前登陆用户的购物车
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/clear_cart",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> clearCart(HttpServletRequest request){
@@ -81,6 +115,13 @@ public class CartController {
                 : ServerResponse.createServerResponse(ReturnCode.CART_CLEAR_FAILD.getCode(),"清空购物车失败");
     }
 
+    /**
+     * 根据 productId 选中指定的商品
+     * @param productId
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/select",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<CartVo> select(Integer productId,HttpServletRequest request) throws BusinessException {
@@ -92,6 +133,13 @@ public class CartController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),cartVo);
     }
 
+    /**
+     * 购物车中取消选中指定的单个商品
+     * @param productId
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/un_select",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<CartVo> unSelect(Integer productId,HttpServletRequest request) throws BusinessException {
@@ -103,6 +151,12 @@ public class CartController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),cartVo);
     }
 
+    /**
+     * 获取当前购物车中商品的总数量
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/get_cart_product_count",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<Integer> getCartProductCount(HttpServletRequest request) throws BusinessException {
@@ -111,6 +165,12 @@ public class CartController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),cartProductCount);
     }
 
+    /**
+     * 选中购物车中所有的商品
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/select_all",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<CartVo> selectAll(HttpServletRequest request) throws BusinessException {
@@ -119,6 +179,12 @@ public class CartController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),cartVo);
     }
 
+    /**
+     * 取消勾选购物车中所有的商品
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/un_select_all",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<CartVo> unSelectAll(HttpServletRequest request) throws BusinessException {

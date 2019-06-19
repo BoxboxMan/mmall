@@ -38,7 +38,7 @@ public class OrderController {
 
 
     /**
-     * 支付订单，并生产二维码
+     * 用户：支付订单，并生产二维码
      * @param orderNo
      * @param request
      * @return
@@ -74,7 +74,7 @@ public class OrderController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),isSuccess);
     }
 
-      /**
+    /**
      * 支付宝回调接口
      * @param request
      * @return
@@ -88,7 +88,13 @@ public class OrderController {
         return callback;
     }
 
-
+    /**
+     * 用户：购物车中选中的商品进行创建订单
+     * @param shippingId
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/create",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<OrderVo> create(Integer shippingId, HttpServletRequest request) throws BusinessException {
@@ -103,6 +109,12 @@ public class OrderController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),null,orderVo);
     }
 
+    /**
+     * 获取购物车中已勾选的商品的详情
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/get_order_cart_product",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<OrderVo> getOrderCartProduct(HttpServletRequest request) throws BusinessException {
@@ -111,6 +123,14 @@ public class OrderController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),orderVo);
     }
 
+    /**
+     * 获取个人订单列表
+     * @param pageSize
+     * @param pageNum
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/list",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<PageInfo> list(@RequestParam(defaultValue = "10") Integer pageSize,
@@ -121,6 +141,13 @@ public class OrderController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),pageInfo);
     }
 
+    /**
+     * 根据 OrderNo 获取订单内部商品等详情信息
+     * @param orderNo
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/detail",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<OrderVo> detail(Long orderNo,HttpServletRequest request) throws BusinessException {
@@ -132,6 +159,13 @@ public class OrderController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),orderVo);
     }
 
+    /**
+     * 允许用户取消未支付的订单
+     * @param orderNo
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/cancel",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<OrderVo> cancel(Long orderNo,HttpServletRequest request) throws BusinessException{

@@ -35,6 +35,15 @@ public class UserManageController {
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
 
+    /**
+     * 管理员登陆
+     * @param username
+     * @param password
+     * @param session
+     * @param response
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<UserVo> login(String username, String password, HttpSession session, HttpServletResponse response) throws Exception{

@@ -113,14 +113,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void resetPassword(String passwordOld, String passwordNew, HttpServletRequest request) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
-        String loggingToken = CookieHelper.readLoggingToken(request);
-        if(loggingToken == null){
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
-        UserVo userVo = (UserVo) redisTemplate.opsForValue().get(loggingToken);
-        if(userVo == null){
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
+        UserVo userVo = (UserVo) redisTemplate.opsForValue().get(CookieHelper.readLoggingToken(request));
         int i = userMapper.checkPasswordOld(userVo.getUsername(), Md5Helper.encode(passwordOld));
         if(i <= 0){
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR,"用户原密码错误");
@@ -133,14 +126,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateInformation(User user, HttpServletRequest request) throws BusinessException {
-        String loggingToken = CookieHelper.readLoggingToken(request);
-        if(loggingToken == null){
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
-        UserVo userVo = (UserVo) redisTemplate.opsForValue().get(loggingToken);
-        if(userVo == null){
-            throw new BusinessException(ReturnCode.USER_NOT_LOGIN);
-        }
+        UserVo userVo = (UserVo) redisTemplate.opsForValue().get(CookieHelper.readLoggingToken(request));
         user.setId(userVo.getId());
         int i = userMapper.updateByPrimaryKeySelective(user);
         if(i <= 0){

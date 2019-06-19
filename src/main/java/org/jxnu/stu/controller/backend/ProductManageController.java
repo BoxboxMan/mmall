@@ -92,6 +92,13 @@ public class ProductManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),fileMap);
     }
 
+    /**
+     * 查看指定商品的详情信息
+     * @param productId
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/detail",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<ProductVo> detail(Integer productId,HttpServletRequest request) throws BusinessException {
@@ -102,6 +109,14 @@ public class ProductManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),productVo);
     }
 
+    /**
+     * 设置商品状态（上、下架）
+     * @param productId
+     * @param status
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/set_sale_status",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> setSaleStatus(Integer productId, Integer status,HttpServletRequest request) throws BusinessException {

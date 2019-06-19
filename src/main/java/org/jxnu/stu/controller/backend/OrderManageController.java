@@ -47,6 +47,12 @@ public class OrderManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),orderVoPageInfo);
     }
 
+    /**
+     * 根据订单号获取订单的信息，包括订单详情
+     * @param orderNo
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/search",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<OrderVo> search(Long orderNo) throws BusinessException {
@@ -54,6 +60,12 @@ public class OrderManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),orderVo);
     }
 
+    /**
+     * 发货（更新订单状态变为发货状态）
+     * @param orderNo
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/send_goods",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> sendGoods(Long orderNo) throws BusinessException{

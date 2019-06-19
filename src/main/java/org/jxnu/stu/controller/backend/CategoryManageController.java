@@ -34,7 +34,7 @@ public class CategoryManageController {
     private RedisTemplate<String,Object> redisTemplate;
 
     /**
-     * get category info ,find category info parallel
+     * 根据
      *
      * @param categoryId
      * @param request
@@ -54,6 +54,14 @@ public class CategoryManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(), categoryVoList);
     }
 
+    /**
+     * 添加分类信息
+     * @param parentId
+     * @param categoryName
+     * @param session
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/add_category", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> addCategory(@RequestParam(defaultValue = "0") Integer parentId, String categoryName, HttpSession session) throws BusinessException {
@@ -64,6 +72,14 @@ public class CategoryManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(), "添加品类成功");
     }
 
+    /**
+     * 更新指定分类的名称
+     * @param categoryId
+     * @param categoryName
+     * @param session
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/set_category_name", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> setCategoryName(Integer categoryId, String categoryName, HttpSession session) throws BusinessException {
@@ -77,6 +93,13 @@ public class CategoryManageController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(), "更新品类信息成功");
     }
 
+    /**
+     * 根据传入的 categoryId 按层遍历获取其下面所有子节点
+     * @param categoryId
+     * @param session
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/get_deep_category", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<List<CategoryVo>> getDeepCategory(Integer categoryId, HttpSession session) throws BusinessException {

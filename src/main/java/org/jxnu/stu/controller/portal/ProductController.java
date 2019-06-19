@@ -20,7 +20,7 @@ public class ProductController {
     private ProductService productService;
 
     /**
-     *
+     * 根据分类、或者关键词搜索商品列表，若传入的categoryId = 0，默认返回所有商品
      * @param categoryId
      * @param keyword 关键词
      * @param pageNum
@@ -43,6 +43,12 @@ public class ProductController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),pageInfo);
     }
 
+    /**
+     * 根据商品Id获取商品详情
+     * @param productId
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/detail",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<ProductVo> detail(Integer productId) throws BusinessException {
