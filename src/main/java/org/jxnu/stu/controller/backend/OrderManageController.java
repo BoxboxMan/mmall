@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RequestMapping("/manage/order")
 @Controller
+@CrossOrigin(allowCredentials = "true")
 public class OrderManageController {
 
     @Autowired
