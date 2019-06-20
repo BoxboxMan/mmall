@@ -57,8 +57,8 @@ public class ScheduleTask {
             log.error("定时关单出现错误!",e);
         }finally {
             if(getLock){
-                redisTemplate.delete(Constant.DistributedLock.LOCK_ORDER_TASK);
-                log.info("---------------------释放锁-----------------------");
+                redisTemplate.expire(Constant.DistributedLock.LOCK_ORDER_TASK,5,TimeUnit.SECONDS);//这里是防止其他线程作判断的时候为空，或者因为业务时间过短直接被第二个线程获取
+                log.info("---------------------5秒后释放锁-----------------------");
             }
         }
         log.info("---------------------定时关单结束-----------------------");
