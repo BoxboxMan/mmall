@@ -44,6 +44,15 @@ public class UserController {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    /**
+     * 用户登陆
+     * @param username
+     * @param password
+     * @param session
+     * @param response
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<UserVo> login(String username, String password, HttpSession session, HttpServletResponse response) throws Exception {
@@ -60,6 +69,14 @@ public class UserController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),ReturnCode.USER_LOGIN_SUCCESS.getMsg(),userVo);
     }
 
+    /**
+     * 新用户注册
+     * @param user
+     * @return
+     * @throws BusinessException
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException
+     */
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> register(@Valid User user) throws BusinessException, NoSuchAlgorithmException, UnsupportedEncodingException {
@@ -71,6 +88,13 @@ public class UserController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),"注册成功！");
     }
 
+    /**
+     * 校验用户的用户名、或者邮箱是否重复
+     * @param str
+     * @param type
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/check_valid",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> checkValid(String str,String type) throws BusinessException {
@@ -84,6 +108,12 @@ public class UserController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode());
     }
 
+    /**
+     * 获取当前登陆用户信息
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/get_user_info",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<UserVo> getUserInfo(HttpServletRequest request) throws Exception {
@@ -91,6 +121,12 @@ public class UserController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),userVo);
     }
 
+    /**
+     * 根据用户名获取密保问题
+     * @param username
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/forget_get_question",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> forgetGetQuestion(String username) throws Exception {
@@ -101,6 +137,15 @@ public class UserController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),null,question);
     }
 
+    /**
+     * 校验指定用户所对应的密保的答案是否正确。
+     * @param username
+     * @param question
+     * @param answer
+     * @param session
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/forget_check_answer",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> forgetCheckAnswer(String username,String question,String answer,HttpSession session) throws Exception{
@@ -117,6 +162,14 @@ public class UserController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),null,token);
     }
 
+    /**
+     * 密保答案校验通过后进行该用户的密码重置，注意：重置的用户账号必须为发起忘记密码流程的用户。
+     * @param username
+     * @param newPassword
+     * @param forgetToken
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/forget_reset_password",method = RequestMethod.POST)
     @ResponseBody
         public ServerResponse<String> forgetResetPassword(String username,String newPassword,String forgetToken) throws Exception {
@@ -133,6 +186,14 @@ public class UserController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),"修改密码成功");
     }
 
+    /**
+     * 用户在登陆状态下重置密码
+     * @param passwordOld
+     * @param passwordNew
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/reset_password",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> resetPassword(String passwordOld,String passwordNew,HttpServletRequest request) throws Exception {
@@ -146,6 +207,13 @@ public class UserController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),"修改密码成功");
     }
 
+    /**
+     * 更新当前登陆用户的个人信息
+     * @param user
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/update_information",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> updateInformation(User user,HttpServletRequest request) throws Exception {
@@ -153,6 +221,12 @@ public class UserController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),"更新个人信息成功");
     }
 
+    /**
+     * 获取当前登陆用户个人信息
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/getInformation",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<UserVo> getInformation(HttpServletRequest request) throws Exception{
@@ -160,6 +234,13 @@ public class UserController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),userVo);
     }
 
+    /**
+     * 当前登陆用户退出登录
+     * @param request
+     * @param response
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/logout",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> logout(HttpServletRequest request,HttpServletResponse response) throws BusinessException {

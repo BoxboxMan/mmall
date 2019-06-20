@@ -31,6 +31,13 @@ public class ShippingController {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    /**
+     * 添加收获地址
+     * @param shipping
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/add",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<Map> add(@Valid Shipping shipping, HttpServletRequest request) throws BusinessException {
@@ -43,6 +50,13 @@ public class ShippingController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),"新建地址成功",map);
     }
 
+    /**
+     * 删除收获地址
+     * @param shippingId
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/del",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> del(Integer shippingId, HttpServletRequest request) throws BusinessException {
@@ -54,6 +68,13 @@ public class ShippingController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),null,"删除地址成功");
     }
 
+    /**
+     * 更新收货地址
+     * @param shipping
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/update",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> update(Shipping shipping, HttpServletRequest request) throws BusinessException {
@@ -65,6 +86,13 @@ public class ShippingController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),null,"更新地址成功");
     }
 
+    /**
+     * 根据 shippingId 获得该收获地址的详细信息
+     * @param shippingId
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/select",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<ShippingVo> select(Integer shippingId, HttpServletRequest request) throws BusinessException {
@@ -76,6 +104,14 @@ public class ShippingController {
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),shippingVo);
     }
 
+    /**
+     * 列出当前登陆用户的所有收货地址信息
+     * @param pageNum
+     * @param pageSize
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping(value = "/list",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<PageInfo> list(@RequestParam(defaultValue = "1") Integer pageNum,@RequestParam(defaultValue = "10") Integer pageSize,
