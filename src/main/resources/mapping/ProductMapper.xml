@@ -437,7 +437,7 @@
 
   <update id="updateStockById" parameterType="java.lang.Integer">
     update mmall_product
-    set stock = stock + #{number}
+    set stock = stock + #{number},create_time = now()
     where id = #{productId}
   </update>
 
