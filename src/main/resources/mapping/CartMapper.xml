@@ -375,7 +375,7 @@
         </if>
     </update>
 
-    <select id="getCartProductCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    <select id="getCartProductCount" parameterType="java.lang.Integer" resultType="int">
         select NULLIF(sum(quantity),0)
         from mmall_cart
         where user_id = #{userId}
