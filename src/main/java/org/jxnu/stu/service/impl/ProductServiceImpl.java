@@ -36,6 +36,7 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductMapper productMapper;
 
+
     /**
      * 根据分类或者名称进行模糊查询
      * @param categoryId
@@ -50,8 +51,15 @@ public class ProductServiceImpl implements ProductService {
     public PageInfo list(Integer categoryId, String keyword, Integer pageNum, Integer pageSize, String orderBy) throws BusinessException {
         PageHelper.startPage(pageNum,pageSize);
         List<Integer> categoryIdList = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
+        List<ProductListVo> productListVoList = new ArrayList<>();
         if(categoryId != null){
-            Category category = categoryMapper.selectByPrimaryKey(categoryId);
+            Category category = null;
+            if(categoryId.intValue() == 0){//如果分类为祖先节点，直接获取所有商品
+                return this.list(pageNum,pageSize);
+            }else{
+                category = categoryMapper.selectByPrimaryKey(categoryId);
+            }
             if(category == null && StringUtils.isEmpty(keyword)){//分类为空，且名称也为空直接返回空list
                 List<ProductListVo> list = new ArrayList<>();
                 PageInfo pageInfo = new PageInfo(list);
@@ -71,8 +79,7 @@ public class ProductServiceImpl implements ProductService {
                 PageHelper.orderBy(strings[0]+" "+strings[1]);
             }
         }
-        List<Product> products = productMapper.listProductByCategoryIdListOrProductName(keyword, categoryIdList);
-        List<ProductListVo> productListVoList = new ArrayList<>();
+        products = productMapper.listProductByCategoryIdListOrProductName(keyword, categoryIdList);
         for (Product product:products){
             productListVoList.add(coverProductVoFromProductDo(product));
         }
