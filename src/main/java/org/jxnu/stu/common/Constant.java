@@ -28,7 +28,7 @@ public class Constant {
     public interface Time{
 
         int SESSION_TIME_OUT = 60 * 30;//秒
-        int LOCK_ORDER_CLOSE = 10 * 1000;//毫秒
+        int LOCK_ORDER_CLOSE = 10 * 1000;//秒
     }
 
     public interface ProductListOrderBy{
