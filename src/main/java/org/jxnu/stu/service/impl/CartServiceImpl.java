@@ -127,7 +127,10 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Integer getCartProductCount(Integer userId) {
-        int cartProductCount = cartMapper.getCartProductCount(userId);
+        Integer cartProductCount = cartMapper.getCartProductCount(userId);
+        if(cartProductCount == null){
+            cartProductCount = 0;
+        }
         return cartProductCount;
     }
 }
