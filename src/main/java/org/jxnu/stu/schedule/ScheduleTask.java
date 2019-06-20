@@ -2,6 +2,7 @@ package org.jxnu.stu.schedule;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.jxnu.stu.common.Constant;
 import org.jxnu.stu.dao.OrderMapper;
@@ -39,9 +40,9 @@ public class ScheduleTask {
             }else {//如果被创建了则判断是否超时
                 if(redisTemplate.opsForValue().get(Constant.DistributedLock.LOCK_ORDER_TASK) == null
                         || Long.valueOf(String.valueOf(redisTemplate.opsForValue().get(Constant.DistributedLock.LOCK_ORDER_TASK))) < System.currentTimeMillis()){
-                    Long oldValue = (Long) redisTemplate.opsForValue().get(Constant.DistributedLock.LOCK_ORDER_TASK);
-                    Long checkOldValue = (Long) redisTemplate.opsForValue().getAndSet(Constant.DistributedLock.LOCK_ORDER_TASK, Constant.Time.LOCK_ORDER_CLOSE);
-                    if(oldValue.longValue() == checkOldValue.longValue()){
+                    String oldValue = (String) redisTemplate.opsForValue().get(Constant.DistributedLock.LOCK_ORDER_TASK);
+                    String checkOldValue = (String) redisTemplate.opsForValue().getAndSet(Constant.DistributedLock.LOCK_ORDER_TASK, Constant.Time.LOCK_ORDER_CLOSE);
+                    if(StringUtils.equals(oldValue,checkOldValue)){
                         redisTemplate.expire(Constant.DistributedLock.LOCK_ORDER_TASK,50,TimeUnit.SECONDS);
                         log.info("---------------------获取锁成功-----------------------");
                         this.closeOrder();
