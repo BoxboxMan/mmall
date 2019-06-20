@@ -40,8 +40,8 @@ public class ScheduleTask {
             }else {//如果被创建了则判断是否超时
                 if(redisTemplate.opsForValue().get(Constant.DistributedLock.LOCK_ORDER_TASK) == null
                         || Long.valueOf(String.valueOf(redisTemplate.opsForValue().get(Constant.DistributedLock.LOCK_ORDER_TASK))) < System.currentTimeMillis()){
-                    String oldValue = (String) redisTemplate.opsForValue().get(Constant.DistributedLock.LOCK_ORDER_TASK);
-                    String checkOldValue = (String) redisTemplate.opsForValue().getAndSet(Constant.DistributedLock.LOCK_ORDER_TASK, Constant.Time.LOCK_ORDER_CLOSE);
+                    String oldValue = String.valueOf(redisTemplate.opsForValue().get(Constant.DistributedLock.LOCK_ORDER_TASK));
+                    String checkOldValue = String.valueOf(redisTemplate.opsForValue().getAndSet(Constant.DistributedLock.LOCK_ORDER_TASK, Constant.Time.LOCK_ORDER_CLOSE));
                     if(StringUtils.equals(oldValue,checkOldValue)){
                         redisTemplate.expire(Constant.DistributedLock.LOCK_ORDER_TASK,50,TimeUnit.SECONDS);
                         log.info("---------------------获取锁成功-----------------------");
