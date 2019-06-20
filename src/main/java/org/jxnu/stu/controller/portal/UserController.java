@@ -55,7 +55,7 @@ public class UserController {
      */
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<UserVo> login(String username, String password, HttpSession session, HttpServletResponse response) throws Exception {
+    public ServerResponse<UserVo> login(String username, String password, HttpSession session, HttpServletResponse response,HttpServletRequest request) throws Exception {
         if(StringUtils.isBlank(username)){
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR,"用户名不能为空");
         }
@@ -64,6 +64,7 @@ public class UserController {
         }
         UserBo userBo = userService.login(username, password);
         UserVo userVo = coverUserVoFromUserBo(userBo);
+        CookieHelper.delLoggingToken(request,response);//确保每次登陆的时候都写入的是最新的cookie
         CookieHelper.writeLoggingToken(response, session.getId());//写入客户端
         redisTemplate.opsForValue().set(session.getId(),userVo,Constant.Time.SESSION_TIME_OUT, TimeUnit.SECONDS);//写入redis
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),ReturnCode.USER_LOGIN_SUCCESS.getMsg(),userVo);
