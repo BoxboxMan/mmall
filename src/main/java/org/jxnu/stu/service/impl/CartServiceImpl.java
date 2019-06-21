@@ -57,7 +57,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartVo add(Integer userId,Integer productId, Integer count) throws BusinessException {
-        List<CartProductVoList> cartProductVoLists = cartMapper.listByUserIdOrProductId(userId, productId);
+            List<CartProductVoList> cartProductVoLists = cartMapper.listByUserIdOrProductId(userId, productId);
         if(cartProductVoLists.size() == 0){//说明不存在这样的商品购买记录所以要新增
             Cart cart = new Cart();
             cart.setQuantity(count);
