@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 public class CookieHelper {
 
     private final static String COOKIE_NAME = "mmall_login_token";
-    private final static String COOKIE_DOMAIN = "wannarich.com";//写在顶级域名才可以被二级域名读取，同级域名是无法读取的
+    private final static String COOKIE_DOMAIN = PropertiesHelper.getProperties("cookie.domain");//写在顶级域名才可以被二级域名读取，同级域名是无法读取的
 
     public static void writeLoggingToken(HttpServletResponse response,String token){
         Cookie cookie = new Cookie(COOKIE_NAME,token);
