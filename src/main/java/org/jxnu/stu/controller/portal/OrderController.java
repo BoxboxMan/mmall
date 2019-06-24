@@ -12,6 +12,7 @@ import org.jxnu.stu.controller.vo.ShippingVo;
 import org.jxnu.stu.controller.vo.UserVo;
 import org.jxnu.stu.dao.CartMapper;
 import org.jxnu.stu.dao.pojo.Cart;
+import org.jxnu.stu.mq.MqProducer;
 import org.jxnu.stu.service.CartService;
 import org.jxnu.stu.service.OrderService;
 import org.jxnu.stu.service.ShippingService;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,10 +34,16 @@ import java.util.Map;
 @CrossOrigin(allowCredentials = "true")
 public class OrderController {
 
+    public static final ThreadLocal<OrderVo> temp = new ThreadLocal<>();
     @Autowired
     private OrderService orderService;
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
+    @Autowired
+    private MqProducer mqProducer;
+    @Autowired
+    private CartMapper cartMapper;
+
 
 
     /**
@@ -89,21 +98,40 @@ public class OrderController {
     }
 
     /**
-     * 用户：购物车中选中的商品进行创建订单
+     * 用户：购物车中选中的商品进行创建订单,如果为null则默认为购物车中选中商品进行下单
+     * @param productIdWithAmountMap
      * @param shippingId
      * @param request
      * @return
      * @throws BusinessException
+     * @throws UnsupportedEncodingException
      */
     @RequestMapping(value = "/create",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<OrderVo> create(Integer shippingId, HttpServletRequest request) throws BusinessException {
+    public ServerResponse<OrderVo> create(Map<String,String> productIdWithAmountMap,Integer shippingId, HttpServletRequest request) throws BusinessException, UnsupportedEncodingException {
         UserVo userVo = (UserVo) redisTemplate.opsForValue().get(CookieHelper.readLoggingToken(request));
-        if(shippingId == null){
-            throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR,"请输入地址id");
+        if(shippingId == null) {
+            throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR, "请输入地址id");
         }
-        OrderVo orderVo = orderService.create(shippingId, userVo.getId());
-        if(orderVo == null){
+        Map<Integer,Integer> productIdWithAmount = new HashMap<>();
+        for(String key:productIdWithAmountMap.keySet()){
+            productIdWithAmount.put(Integer.valueOf(key),Integer.valueOf(productIdWithAmountMap.get(key)));
+        }
+        if(productIdWithAmount == null || productIdWithAmount.size() < 1){//如果productIdWithAmount为空则用购物车中选中的商品下单。
+            List<Cart> cartList = cartMapper.selectCheckedByUserId(userVo.getId());
+            if (cartList.size() < 1 || cartList == null) {
+                throw new BusinessException(ReturnCode.CART_IS_EMPTY);
+            }
+            for(Cart cart:cartList){
+                productIdWithAmount.put(cart.getProductId(),cart.getQuantity());
+            }
+        }
+        if(productIdWithAmount.keySet().size() < 1){
+            throw new BusinessException(ReturnCode.ORDER_HAS_NO_PRODUCT);
+        }
+        boolean result = mqProducer.transactionAsyncReduceStock(productIdWithAmount, shippingId, userVo.getId());
+        OrderVo orderVo = temp.get();
+        if(orderVo == null || !result){
             return ServerResponse.createServerResponse(ReturnCode.ORDER_CREATE_FAILD.getCode(),ReturnCode.ORDER_CREATE_FAILD.getMsg());
         }
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),null,orderVo);

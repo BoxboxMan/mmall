@@ -7,6 +7,7 @@ import org.jxnu.stu.controller.vo.OrderVo;
 import org.jxnu.stu.dao.pojo.Order;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 public interface OrderService {
@@ -17,7 +18,7 @@ public interface OrderService {
 
     String alipayCallback(HttpServletRequest request) throws BusinessException;
 
-    OrderVo create(Integer shippingId, Integer userId) throws BusinessException;
+    OrderVo create(Map<Integer,Integer> productIdWithAmount,Integer shippingId, Integer userId) throws BusinessException;
 
     OrderVo getOrderCartProduct(Integer userId)throws BusinessException;
 

@@ -250,11 +250,11 @@
             <version>3.3.4.ALL</version>
         </dependency>
 
-        <!--mq-->
+        <!--RocketMQ-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
-            <version>2.1.4.RELEASE</version>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+            <version>4.3.0</version>
         </dependency>
 
         <!-- 将当面付jar包打包 -->
@@ -297,7 +297,11 @@
         <resources>
             <resource>
                 <directory>src/main/resources.${profileActive}</directory>
-                <filtering>false</filtering>
+                <filtering>true</filtering>
+                <includes>
+                    <include>logback.xml</include>
+                    <include>zfbinfo.properties</include>
+                </includes>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>

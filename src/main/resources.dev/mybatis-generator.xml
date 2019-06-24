@@ -30,17 +30,17 @@
     </javaClientGenerator>
 
 	<!-- 指定数据库表 -->
-	<table tableName="mmall_cart" domainObjectName="Cart"/>
-	<table tableName="mmall_category" domainObjectName="Category"/>
-	<table tableName="mmall_order" domainObjectName="Order"/>
-	<table tableName="mmall_order_item" domainObjectName="OrderItem"/>
-	<table tableName="mmall_pay_info" domainObjectName="PayInfo"/>
-	<table tableName="mmall_product" domainObjectName="Product">
-            <columnOverride column="detail" jdbcType="VARCHAR"/>
-            <columnOverride column="sub_images" jdbcType="VARCHAR"/>
-    </table>
-	<table tableName="mmall_shipping" domainObjectName="Shipping"/>
-	<table tableName="mmall_user" domainObjectName="User"/>
+	<!--<table tableName="mmall_cart" domainObjectName="Cart"/>-->
+	<!--<table tableName="mmall_category" domainObjectName="Category"/>-->
+	<!--<table tableName="mmall_order" domainObjectName="Order"/>-->
+	<!--<table tableName="mmall_order_item" domainObjectName="OrderItem"/>-->
+	<!--<table tableName="mmall_pay_info" domainObjectName="PayInfo"/>-->
+	<!--<table tableName="mmall_product" domainObjectName="Product">-->
+            <!--<columnOverride column="detail" jdbcType="VARCHAR"/>-->
+            <!--<columnOverride column="sub_images" jdbcType="VARCHAR"/>-->
+    <!--</table>-->
+	<!--<table tableName="mmall_shipping" domainObjectName="Shipping"/>-->
+	<!--<table tableName="mmall_user" domainObjectName="User"/>-->
 
     <!-- <table schema="DB2ADMIN" tableName="ALLTYPES" domainObjectName="Customer" >
       <property name="useActualColumnNames" value="true"/>

@@ -27,7 +27,7 @@ public class ScheduleTask {
     private RedisTemplate<String,Object> redisTemplate;
 
 
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0 0/1 * * ?")
     public void closeOrderTask(){
         log.info("---------------------定时关单开始-----------------------");
         boolean getLock = false;

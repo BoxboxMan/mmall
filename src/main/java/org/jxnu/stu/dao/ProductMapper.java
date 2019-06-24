@@ -103,7 +103,7 @@ public interface ProductMapper {
     int setSaleStatus(@Param("productId") Integer productId,@Param("status") Integer status);
 
     /**
-     * number为负数则减库存，number为整数则加库存
+     * number为负数则减库存，number为正整数则加库存
      * @param productId
      * @param number
      * @return
