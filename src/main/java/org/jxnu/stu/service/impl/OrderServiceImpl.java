@@ -559,7 +559,7 @@ public class OrderServiceImpl implements OrderService {
             if (productCount == null) {//如果redis中不存在
                 Product product = productMapper.selectByPrimaryKey(productId.intValue());
                 productCount = product.getStock();
-                redisTemplate.opsForValue().set("product_stock_id_" + productId.intValue(), productCount.intValue(), 30, TimeUnit.MINUTES);
+                redisTemplate.opsForValue().setIfAbsent("product_stock_id_" + productId.intValue(), productCount.intValue(), 30, TimeUnit.MINUTES);
             }
             //Product product = productMapper.selectByPrimaryKey(cart.getProductId());
             if (amount.intValue() > productCount.intValue()) {
@@ -569,7 +569,7 @@ public class OrderServiceImpl implements OrderService {
             Long result = redisTemplate.opsForValue().increment("product_stock_id_" + productId.intValue(), amount.intValue() * -1);
             if (result.longValue() == 0) {
                 log.info("此时商品号为：{}，库存已售罄", productId);
-                redisTemplate.opsForValue().set("product_stock_sellOut_id_" + productId.intValue(), -1);
+                redisTemplate.opsForValue().setIfAbsent("product_stock_sellOut_id_" + productId.intValue(), -1);
             } else if (result.longValue() < 0) {
                 log.info("商品号为：{}，redis预扣库存失败，开始回补库存", productId.intValue());
                 redisTemplate.opsForValue().increment("product_stock_id_" + productId.intValue(), amount.intValue());

@@ -123,6 +123,12 @@ public class Constant {
 
     }
 
+    public interface ProductConstant{
+       Integer STATUS_ON_SALE = 1;
+       Integer STATUS_SOLD_OUT = 2;
+       Integer STATUS_HAVE_DELETED = 3;
+    }
+
     public static final boolean CATEGORY_NORMAL = true;
     public static final boolean CATEGORY_ABANDON = false;
 

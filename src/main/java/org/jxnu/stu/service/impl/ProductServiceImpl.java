@@ -3,6 +3,7 @@ package org.jxnu.stu.service.impl;
 import com.alibaba.druid.util.StringUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.jxnu.stu.common.BusinessException;
 import org.jxnu.stu.common.Constant;
 import org.jxnu.stu.common.ReturnCode;
@@ -18,23 +19,26 @@ import org.jxnu.stu.util.DateTimeHelper;
 import org.jxnu.stu.util.PropertiesHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class ProductServiceImpl implements ProductService {
 
 
     @Autowired
     private CategoryMapper categoryMapper;
-
     @Autowired
     private CategoryServiceImpl categoryService;
-
     @Autowired
     private ProductMapper productMapper;
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
 
 
     /**
@@ -144,14 +148,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void setSaleStatus(Integer productId, Integer status) throws BusinessException {
+        //如果对应商品下架则需要删除redis库存，如果商品上架需要更新redis库存
+        if(status.equals(Constant.ProductConstant.STATUS_SOLD_OUT)){//设置下架
+            redisTemplate.delete("product_stock_id_"+productId);
+        }else if(status.equals(Constant.ProductConstant.STATUS_ON_SALE)){//设置上架
+            Product product = productMapper.selectByPrimaryKey(productId);
+            redisTemplate.opsForValue().set("product_stock_id_"+productId,product.getStock());
+        }
         int i = productMapper.setSaleStatus(productId, status);
         if(i < 1){
             throw new BusinessException(ReturnCode.PRODUCT_UPDATE_ERROR);
         }
+
+
     }
 
     @Override
+    @Transactional
     public void save(ProductVo product) throws BusinessException {
         Product productDo = new Product();
         BeanUtils.copyProperties(product,productDo);
@@ -169,12 +184,17 @@ public class ProductServiceImpl implements ProductService {
         productDo.setSubImages(new String(subImagesString));
         Integer result = null;
         if(product.getId() == null){
+            productDo.setStatus(2);//新增的商品统一为下架状态
             result = productMapper.insert(productDo);
+            log.info("新增商品{} 成功",productDo.getName());
         }else{
             result = productMapper.updateByPrimaryKeySelective(productDo);
-        }
-        if(result < 1){
-            throw new BusinessException(ReturnCode.PRODUCT_UPDATE_ERROR,"新增或更新产品信息失败");
+            //若更新的产品为上架状态则修改redis对应商品库存,同时删除redis中对应商品售罄标识
+            if (productDo.getStatus().equals(Constant.ProductConstant.STATUS_ON_SALE)){
+                redisTemplate.opsForValue().set("product_stock_id_"+productDo.getId(),productDo.getStock());//更新redis库存
+                redisTemplate.delete("product_stock_sellOut_id_"+productDo.getId());//删除redis库存售罄标识
+            }
+            log.info("更新id为:{}  的商品成功",productDo.getId());
         }
     }
 
