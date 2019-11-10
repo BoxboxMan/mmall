@@ -72,7 +72,7 @@ public class MqProducer {
 
     /**
      * 发送事务型消息
-     * @param productIdWithAmount
+     * @param productIdWithAmount 购买的商品ID对应的购买数量
      * @param shippingId
      * @param userId
      * @return
