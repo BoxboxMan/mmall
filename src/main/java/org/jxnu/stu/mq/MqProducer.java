@@ -112,7 +112,7 @@ public class MqProducer {
      * @throws MQClientException
      * @throws MQBrokerException
      */
-    public boolean asyncReduceStock(Integer productId,Integer amount) {
+    /*public boolean asyncReduceStock(Integer productId,Integer amount) {
         Map<String,Object> bodyMap = new HashMap<>();
         bodyMap.put("productId",productId);
         bodyMap.put("amount",amount);
@@ -133,7 +133,7 @@ public class MqProducer {
             return false;
         }
         return true;
-    }
+    }*/
 
 
 

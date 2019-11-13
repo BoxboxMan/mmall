@@ -89,7 +89,7 @@ public class OrderController {
      * @return
      * @throws BusinessException
      */
-    @RequestMapping(value = "/alipay_callback")
+    @RequestMapping(value = "/alipay_callback",method = RequestMethod.POST)
     @ResponseBody
     public String alipayCallback(HttpServletRequest request) throws BusinessException {
         log.info("支付宝回调开始");
@@ -113,7 +113,7 @@ public class OrderController {
         if(shippingId == null) {
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR, "请输入地址id");
         }
-        Map<Integer,Integer> productIdWithAmount = new HashMap<>();
+        Map<Integer,Integer> productIdWithAmount = new HashMap<>();//productId对应其被购买的count
         for(String key:productIdWithAmountMap.keySet()){
             productIdWithAmount.put(Integer.valueOf(key),Integer.valueOf(productIdWithAmountMap.get(key)));
         }

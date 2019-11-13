@@ -237,7 +237,7 @@ public class OrderServiceImpl implements OrderService {
             log.info(ReturnCode.ALIPAY_CALLBACK_ORDER_NOT_EXIST.getMsg());
             return "false";
         }
-        if (callBackOrder.getStatus() >= Constant.OrderStatus.ORDER_PAYED.getStatusCode()) {
+        if (callBackOrder.getStatus() > Constant.OrderStatus.ORDER_PAYED.getStatusCode()) {
             log.info(ReturnCode.ALIPAY_CALLBACK_REPETOR.getMsg());
             return "false";
         }
@@ -556,7 +556,7 @@ public class OrderServiceImpl implements OrderService {
             }
             Integer amount = productIdWithAmount.get(productId.intValue());
             Integer productCount = (Integer) redisTemplate.opsForValue().get("product_stock_id_" + productId.intValue());
-            if (productCount == null) {//如果redis中不存在
+            if (productCount == null) {//如果redis中不存在，就去数据库中进行查找
                 Product product = productMapper.selectByPrimaryKey(productId.intValue());
                 productCount = product.getStock();
                 redisTemplate.opsForValue().setIfAbsent("product_stock_id_" + productId.intValue(), productCount.intValue(), 30, TimeUnit.MINUTES);
