@@ -67,10 +67,10 @@ public enum ReturnCode implements CommonReturn{
 
     ;
     private int code;
-    private String errMsg;
-    private ReturnCode(int errCode,String errMsg){
-        this.code = errCode;
-        this.errMsg = errMsg;
+    private String msg;
+    private ReturnCode(int code, String msg){
+        this.code = code;
+        this.msg = msg;
     }
     @Override
     public int getCode() {
@@ -78,11 +78,11 @@ public enum ReturnCode implements CommonReturn{
     }
     @Override
     public String getMsg() {
-        return errMsg;
+        return msg;
     }
     @Override
     public ReturnCode setMsg(String errMsg) {
-        this.errMsg = errMsg;
+        this.msg = errMsg;
         return this;
     }
 
