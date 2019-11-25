@@ -66,15 +66,15 @@ public enum ReturnCode implements CommonReturn{
     //the encode string is null
 
     ;
-    private int errCode;
+    private int code;
     private String errMsg;
     private ReturnCode(int errCode,String errMsg){
-        this.errCode = errCode;
+        this.code = errCode;
         this.errMsg = errMsg;
     }
     @Override
     public int getCode() {
-        return errCode;
+        return code;
     }
     @Override
     public String getMsg() {
