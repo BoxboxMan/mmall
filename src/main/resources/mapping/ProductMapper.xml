@@ -404,7 +404,7 @@
     <if test="productName != null and productName != ''">
       and name like #{productName}
     </if>
-    <if test="categoryIdList != null">
+    <if test="categoryIdList != null and categoryIdList.size() > 0">
       and category_id in
       <foreach collection="categoryIdList" item="item" index="index" open="(" separator="," close=")">
         #{item}
