@@ -252,7 +252,7 @@ public class OrderServiceImpl implements OrderService {
             //更新Order表
             Order order = new Order();
             order.setId(callBackOrder.getId());
-            order.setPaymentTime(new Date());
+            order.setPaymentTime(DateTimeHelper.strToDate(DateTimeHelper.dateToString(new Date())));
             order.setStatus(Constant.OrderStatus.ORDER_PAYED.getStatusCode());
             orderMapper.updateByPrimaryKeySelective(order);
             //更新pay_info表
