@@ -488,6 +488,7 @@ public class OrderServiceImpl implements OrderService {
         orderVo.setImageHost(PropertiesHelper.getProperties("ftp.server.http.prefix"));
         orderVo.setReceiverName(shipping.getReceiverName());
         orderVo.setShippingVo(this.assembleShippingVo(shipping));
+        orderVo.setProductTotalPrice(order.getPayment());
         return orderVo;
     }
 

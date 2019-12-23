@@ -63,6 +63,9 @@ public class UserController {
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR,"密码不能为空");
         }
         UserBo userBo = userService.login(username, password);
+        if(userBo.getRole() == Constant.USER_ADMIN){
+            throw new BusinessException(ReturnCode.USER_LOGIN_FAILED,"请到管理员入口登陆");
+        }
         UserVo userVo = coverUserVoFromUserBo(userBo);
        // CookieHelper.delLoggingToken(request,response);//确保每次登陆的时候都写入的是最新的cookie
         CookieHelper.writeLoggingToken(response, session.getId());//写入客户端
