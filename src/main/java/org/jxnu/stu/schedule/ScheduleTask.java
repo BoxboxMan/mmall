@@ -5,8 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.jxnu.stu.common.Constant;
+import org.jxnu.stu.dao.OrderItemMapper;
 import org.jxnu.stu.dao.OrderMapper;
+import org.jxnu.stu.dao.ProductMapper;
 import org.jxnu.stu.dao.pojo.Order;
+import org.jxnu.stu.dao.pojo.OrderItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,6 +28,10 @@ public class ScheduleTask {
     private OrderMapper orderMapper;
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
+    @Autowired
+    private ProductMapper productMapper;
+    @Autowired
+    private OrderItemMapper orderItemMapper;
 
 
     @Scheduled(cron = "0 0 0/1 * * ?")
@@ -74,6 +81,15 @@ public class ScheduleTask {
             if(outTime.before(currentTime)){//如果超时则关闭订单
                 orderMapper.updateStatusByOrderNo(order.getOrderNo(),Constant.OrderStatus.ORDER_CLOSE.getStatusCode());
                 log.info("---------------------订单号:{}，被关闭-----------------------",order.getOrderNo());
+            }
+            List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(order.getOrderNo());
+            for(OrderItem orderItem:orderItemList){
+                productMapper.updateStockById(orderItem.getProductId(),orderItem.getQuantity());//数据库补回
+                if(null == redisTemplate.opsForValue().get("product_stock_id_" + orderItem.getProductId())){//缓存库存
+                    redisTemplate.opsForValue().set("product_stock_id_" + orderItem.getProductId(),productMapper.selectByPrimaryKey(orderItem.getProductId()));//缓存库存
+                }else {
+                    redisTemplate.opsForValue().increment("product_stock_id_" + orderItem.getProductId(),orderItem.getQuantity().intValue());//更新缓存
+                }
             }
         }
     }
