@@ -11,7 +11,9 @@ import org.jxnu.stu.controller.vo.OrderVo;
 import org.jxnu.stu.controller.vo.ShippingVo;
 import org.jxnu.stu.controller.vo.UserVo;
 import org.jxnu.stu.dao.CartMapper;
+import org.jxnu.stu.dao.ShippingMapper;
 import org.jxnu.stu.dao.pojo.Cart;
+import org.jxnu.stu.dao.pojo.Shipping;
 import org.jxnu.stu.mq.MqProducer;
 import org.jxnu.stu.service.CartService;
 import org.jxnu.stu.service.OrderService;
@@ -43,6 +45,8 @@ public class OrderController {
     private MqProducer mqProducer;
     @Autowired
     private CartMapper cartMapper;
+    @Autowired
+    private ShippingMapper shippingMapper;
 
 
 
@@ -112,6 +116,10 @@ public class OrderController {
         UserVo userVo = (UserVo) redisTemplate.opsForValue().get(CookieHelper.readLoggingToken(request));
         if(shippingId == null) {
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR, "请输入地址id");
+        }
+        Shipping shipping = shippingMapper.selectByUserIdShippingId(shippingId, userVo.getId());
+        if(shipping == null){
+            throw new BusinessException(ReturnCode.ORDER_CREATE_FAILD,"请选择正确的收货地址");
         }
         Map<Integer,Integer> productIdWithAmount = new HashMap<>();//productId对应其被购买的count
         for(String key:productIdWithAmountMap.keySet()){
