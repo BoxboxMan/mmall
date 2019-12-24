@@ -54,8 +54,8 @@ public class UserManageController {
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR,"密码不能为空!");
         }
         UserBo userBo = userService.login(username, password);
-        if (userBo == null || userBo.getRole() == Constant.USER_ORDINARY) {
-            throw new BusinessException(ReturnCode.USER_LOGIN_FAILED);
+        if (userBo.getRole() == Constant.USER_ORDINARY) {
+            throw new BusinessException(ReturnCode.USER_LOGIN_FAILED,"请在用户接口登录");
         }
         UserVo userVo = userController.coverUserVoFromUserBo(userBo);
         String token = session.getId();

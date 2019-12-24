@@ -7,6 +7,7 @@ import org.jxnu.stu.common.ReturnCode;
 import org.jxnu.stu.common.ServerResponse;
 import org.jxnu.stu.controller.vo.CategoryVo;
 import org.jxnu.stu.controller.vo.UserVo;
+import org.jxnu.stu.dao.CategoryMapper;
 import org.jxnu.stu.dao.pojo.Category;
 import org.jxnu.stu.service.CategoryService;
 import org.jxnu.stu.service.bo.CategoryBo;
@@ -29,9 +30,11 @@ public class CategoryManageController {
 
     @Autowired
     private CategoryService categoryService;
-
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
+    @Autowired
+    private CategoryMapper categoryMapper;
+
 
     /**
      * 根据
@@ -67,6 +70,10 @@ public class CategoryManageController {
     public ServerResponse<String> addCategory(@RequestParam(defaultValue = "0") Integer parentId, String categoryName, HttpSession session) throws BusinessException {
         if (StringUtils.isEmpty(categoryName)) {
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR, "商品分类名称为空");
+        }
+        Category parentCategory = categoryMapper.selectByPrimaryKey(parentId);
+        if(parentCategory == null && parentId != 0){
+            throw new BusinessException(ReturnCode.CATEGORY_NOT_EXIST,"上层分类不存在");
         }
         categoryService.addCategory(parentId, categoryName);
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(), "添加品类成功");

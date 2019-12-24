@@ -28,9 +28,6 @@ public class CategoryServiceImpl implements CategoryService {
      */
     public List<CategoryBo> getChildrenParallelCategory(Integer categoryId) throws BusinessException {
         List<Category> categoryList = categoryMapper.findChildrenParallelCategory(categoryId);
-        if (categoryList.size() == 0) {
-            throw new BusinessException(ReturnCode.CATEGORY_NOT_EXIST);
-        }
         List<CategoryBo> resList = new ArrayList<>();
         for (Category category : categoryList) {
             CategoryBo categoryBo = coverCategoryBoFromCategoryDo(category);
