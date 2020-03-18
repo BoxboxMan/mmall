@@ -37,7 +37,7 @@ public class CategoryManageController {
 
 
     /**
-     * 根据
+     * 根据产品类别ID获取分类信息
      *
      * @param categoryId
      * @param request
