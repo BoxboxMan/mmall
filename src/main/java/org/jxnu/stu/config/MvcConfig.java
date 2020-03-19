@@ -30,6 +30,7 @@ public class MvcConfig extends WebMvcConfigurationSupport {
         List<String> excludePatterns = new ArrayList<>();
         excludePatterns.add("/order/alipay_callback");
         excludePatterns.add("/manage/user/login");
+        excludePatterns.add("/user/login");
         registry.addInterceptor(loginIntercept).addPathPatterns(patterns).excludePathPatterns(excludePatterns);
         super.addInterceptors(registry);
     }
