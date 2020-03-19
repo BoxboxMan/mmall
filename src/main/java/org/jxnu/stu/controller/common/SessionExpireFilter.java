@@ -44,7 +44,7 @@ public class SessionExpireFilter implements Filter {
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
         httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
         httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
-        chain.doFilter(request, response);
+        chain.doFilter(request, httpServletResponse);
     }
 
     @Override
