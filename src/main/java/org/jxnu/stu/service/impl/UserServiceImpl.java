@@ -8,6 +8,7 @@ import org.jxnu.stu.dao.pojo.User;
 import org.jxnu.stu.service.UserService;
 import org.jxnu.stu.service.bo.UserBo;
 import org.jxnu.stu.util.CookieHelper;
+import org.jxnu.stu.util.DateTimeHelper;
 import org.jxnu.stu.util.Md5Helper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,6 +133,9 @@ public class UserServiceImpl implements UserService {
         if(i <= 0){
             throw new BusinessException(ReturnCode.USER_INFO_UPDATE_ERROR);
         }
+        User userDo = userMapper.selectByPrimaryKey(userVo.getId());
+        UserVo userVoNew = coverUserVoFromUserBo(coverUserBoFromUserDo(userDo));
+        redisTemplate.opsForValue().set(CookieHelper.readLoggingToken(request),userVoNew);
     }
 
     private UserBo coverUserBoFromUserDo(User user){
@@ -141,5 +145,16 @@ public class UserServiceImpl implements UserService {
         UserBo userBo = new UserBo();
         BeanUtils.copyProperties(user,userBo);
         return userBo;
+    }
+
+    private UserVo coverUserVoFromUserBo(UserBo userBo) throws BusinessException {
+        if(userBo == null){
+            return null;
+        }
+        UserVo userVo = new UserVo();
+        BeanUtils.copyProperties(userBo,userVo);
+        userVo.setCreateTime(DateTimeHelper.dateToString(userBo.getCreateTime()));
+        userVo.setUpdateTime(DateTimeHelper.dateToString(userBo.getUpdateTime()));
+        return userVo;
     }
 }
