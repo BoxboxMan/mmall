@@ -54,7 +54,6 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public PageInfo list(Integer categoryId, String keyword, Integer pageNum, Integer pageSize, String orderBy) throws BusinessException {
-        PageHelper.startPage(pageNum, pageSize);
         List<Integer> categoryIdList = new ArrayList<>();
         List<Product> products = new ArrayList<>();
         List<ProductListVo> productListVoList = new ArrayList<>();
@@ -66,6 +65,7 @@ public class ProductServiceImpl implements ProductService {
                 category = categoryMapper.selectByPrimaryKey(categoryId);
             }
             if (category == null && StringUtils.isEmpty(keyword)) {//分类为空，且名称也为空直接返回空list
+                PageHelper.startPage(pageNum, pageSize);
                 List<ProductListVo> list = new ArrayList<>();
                 PageInfo pageInfo = new PageInfo(list);
                 return pageInfo;
@@ -78,6 +78,7 @@ public class ProductServiceImpl implements ProductService {
         if (!StringUtils.isEmpty(keyword)) {//说明此时categoryId不为空
             keyword = new StringBuilder().append("%").append(keyword).append("%").toString();
         }
+        PageHelper.startPage(pageNum, pageSize);
         if (!StringUtils.isEmpty(orderBy)) {
             if (Constant.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)) {
                 String[] strings = orderBy.split("_");
