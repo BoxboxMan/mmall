@@ -88,7 +88,8 @@ public class ProductServiceImpl implements ProductService {
         for (Product product : products) {
             productListVoList.add(coverProductVoFromProductDo(product));
         }
-        PageInfo pageInfo = new PageInfo(productListVoList);
+        PageInfo pageInfo = new PageInfo(products);
+        pageInfo.setList(productListVoList);
         return pageInfo;
     }
 

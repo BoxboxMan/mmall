@@ -19,9 +19,9 @@ public class ProductVo {
 
     @NotEmpty(message = "请填写商品子标题")
     private String subtitle;
-
+    @NotEmpty(message = "请上传商品主图")
     private String mainImage;
-
+    @NotEmpty(message = "请上传商品子图")
     private List<String> subImages;
 
     private String detail;
