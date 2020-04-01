@@ -186,7 +186,7 @@ public class ProductServiceImpl implements ProductService {
             String str = subImagesString.length() == 0 ? subImage : "," + subImage;
             subImagesString.append(str);
         }
-        subImagesString.deleteCharAt(0).deleteCharAt(subImagesString.length() - 1);//删除前后的数组括号（因为前段传值问题引起的)
+        //subImagesString.deleteCharAt(0).deleteCharAt(subImagesString.length() - 1);//删除前后的数组括号（因为前段传值问题引起的)
         productDo.setSubImages(new String(subImagesString));
         Integer result = null;
         if (product.getId() == null) {
