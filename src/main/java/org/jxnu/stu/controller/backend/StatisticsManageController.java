@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @RequestMapping("/manage/statistics")
 @Controller
-@CrossOrigin(allowCredentials = "true")
+@CrossOrigin(allowCredentials = "true", origins = "*")
 public class StatisticsManageController {
 
 }

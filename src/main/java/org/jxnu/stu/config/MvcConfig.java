@@ -21,7 +21,7 @@ public class MvcConfig extends WebMvcConfigurationSupport {
         patterns.add("/shipping/**");
         patterns.add("/order/**");
         patterns.add("/cart/**");
-        patterns.add("/user/get_user_info");
+        //patterns.add("/user/get_user_info");
         patterns.add("/user/reset_password");
         patterns.add("/user/update_information");
         patterns.add("/user/get_information");
@@ -31,6 +31,7 @@ public class MvcConfig extends WebMvcConfigurationSupport {
         excludePatterns.add("/order/alipay_callback");
         excludePatterns.add("/manage/user/login");
         excludePatterns.add("/user/login");
+        excludePatterns.add("/cart/get_cart_product_count");
         registry.addInterceptor(loginIntercept).addPathPatterns(patterns).excludePathPatterns(excludePatterns);
         super.addInterceptors(registry);
     }

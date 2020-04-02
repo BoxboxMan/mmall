@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping("/user")
-@CrossOrigin(allowCredentials = "true")
+@CrossOrigin(allowCredentials = "true", origins = "*")
 public class UserController {
 
     @Autowired
@@ -113,7 +113,7 @@ public class UserController {
     }
 
     /**
-     * 获取当前登陆用户信息
+     * 获取当前登陆用户信息，不一定登陆
      * @param request
      * @return
      * @throws Exception
@@ -121,7 +121,14 @@ public class UserController {
     @RequestMapping(value = "/get_user_info",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<UserVo> getUserInfo(HttpServletRequest request) throws Exception {
-        UserVo userVo = (UserVo) redisTemplate.opsForValue().get(CookieHelper.readLoggingToken(request));
+        UserVo userVo = null;
+        String loggingToken = CookieHelper.readLoggingToken(request);
+        if(!StringUtils.isBlank(loggingToken)) {
+            userVo = (UserVo) redisTemplate.opsForValue().get(loggingToken);
+        }
+        if(userVo == null){
+            return ServerResponse.createServerResponse(ReturnCode.ERROR.getCode(),"用户未登录，但是不能返回未登录状态码（前台会强行登陆）");
+        }
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),userVo);
     }
 

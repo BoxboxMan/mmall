@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/shipping")
-@CrossOrigin(allowCredentials = "true")
+@CrossOrigin(allowCredentials = "true", origins = "*")
 public class ShippingController {
 
     @Autowired

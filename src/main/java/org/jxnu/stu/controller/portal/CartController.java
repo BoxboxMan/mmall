@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/cart")
-@CrossOrigin(allowCredentials = "true")
+@CrossOrigin(allowCredentials = "true", origins = "*")
 public class CartController {
 
     @Autowired
@@ -160,7 +160,14 @@ public class CartController {
     @RequestMapping(value = "/get_cart_product_count",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<Integer> getCartProductCount(HttpServletRequest request) throws BusinessException {
-        UserVo userVo = (UserVo) redisTemplate.opsForValue().get(CookieHelper.readLoggingToken(request));
+        UserVo userVo = null;
+        String loggingToken = CookieHelper.readLoggingToken(request);
+        if(!StringUtils.isEmpty(loggingToken)) {
+            userVo = (UserVo) redisTemplate.opsForValue().get(loggingToken);
+        }
+        if(userVo == null){
+            return ServerResponse.createServerResponse(ReturnCode.ERROR.getCode(),"用户未登录，但是不能返回未登录状态码（前台会强行登陆）");
+        }
         Integer cartProductCount = cartService.getCartProductCount(userVo.getId());
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),cartProductCount);
     }

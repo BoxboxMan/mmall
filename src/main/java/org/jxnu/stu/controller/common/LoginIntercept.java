@@ -12,6 +12,7 @@ import org.jxnu.stu.util.JsonHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,6 +26,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
+@CrossOrigin(allowCredentials = "true", origins = "*")
 public class LoginIntercept implements HandlerInterceptor {
 
     @Autowired

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 @WebFilter( urlPatterns = "/*",filterName = "sessionExpireFilter")
+@CrossOrigin(allowCredentials = "true", origins = "*")
 public class SessionExpireFilter implements Filter {
 
     @Autowired
@@ -40,11 +42,7 @@ public class SessionExpireFilter implements Filter {
                 redisTemplate.expire(loggingToken, Constant.Time.SESSION_TIME_OUT, TimeUnit.SECONDS);
             }
         }
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        httpServletResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:8090");
-        httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-        httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
-        chain.doFilter(request, httpServletResponse);
+        chain.doFilter(request, response);
     }
 
     @Override
