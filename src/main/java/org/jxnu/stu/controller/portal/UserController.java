@@ -238,7 +238,7 @@ public class UserController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/getInformation",method = RequestMethod.POST)
+    @RequestMapping(value = "/get_information",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<UserVo> getInformation(HttpServletRequest request) throws Exception{
         UserVo userVo = (UserVo) redisTemplate.opsForValue().get(CookieHelper.readLoggingToken(request));

@@ -8,7 +8,9 @@ import org.jxnu.stu.common.ReturnCode;
 import org.jxnu.stu.controller.vo.CartProductVoList;
 import org.jxnu.stu.controller.vo.CartVo;
 import org.jxnu.stu.dao.CartMapper;
+import org.jxnu.stu.dao.ProductMapper;
 import org.jxnu.stu.dao.pojo.Cart;
+import org.jxnu.stu.dao.pojo.Product;
 import org.jxnu.stu.service.CartService;
 import org.jxnu.stu.util.BigDecimalHelper;
 import org.jxnu.stu.util.PropertiesHelper;
@@ -24,6 +26,8 @@ public class CartServiceImpl implements CartService {
 
     @Autowired
     private CartMapper cartMapper;
+    @Autowired
+    private ProductMapper productMapper;
 
     @Override
     public CartVo list(Integer userId) {
@@ -57,7 +61,14 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartVo add(Integer userId,Integer productId, Integer count) throws BusinessException {
-            List<CartProductVoList> cartProductVoLists = cartMapper.listByUserIdOrProductId(userId, productId);
+        Product product = productMapper.selectByPrimaryKey(productId);
+        if(Constant.ProductConstant.STATUS_ON_SALE != product.getStatus()){
+            throw new BusinessException(ReturnCode.PRODUCT_NOT_SALE);
+        }
+        if(0 >= product.getStock() || count > product.getStock()){
+            throw new BusinessException(ReturnCode.PRODUCT_STOCK_NOT_ENOUGH);
+        }
+        List<CartProductVoList> cartProductVoLists = cartMapper.listByUserIdOrProductId(userId, productId);
         if(cartProductVoLists.size() == 0){//说明不存在这样的商品购买记录所以要新增
             Cart cart = new Cart();
             cart.setQuantity(count);

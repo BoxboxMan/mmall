@@ -49,7 +49,6 @@ public class Shipping {
      *
      * @mbg.generated Sat Mar 30 17:46:04 CST 2019
      */
-    @NotEmpty(message = "收货人电话不能为空")
         private String receiverMobile;
 
     /**
@@ -98,7 +97,6 @@ public class Shipping {
      *
      * @mbg.generated Sat Mar 30 17:46:04 CST 2019
      */
-    @NotEmpty(message = "收货人地区邮编不能为空")
     private String receiverZip;
 
     /**
