@@ -57,6 +57,7 @@ public enum ReturnCode implements CommonReturn{
     ORDER_CANCEL_FAILD(70003,"取消订单失败"),
     ORDER_DELIVER_FAILD(70004,"订单发货失败"),
     ORDER_HAS_NO_PRODUCT(70005,"订单中不存在商品"),
+    ORDER_LIST_EMPTY(70006,"订单列表为空"),
 
     //start from 80000 to 90000 be used to description alipay error info
     ALIPAY_CALLBACK_REPETOR(80000,"阿里回调重复"),

@@ -65,7 +65,7 @@ public class ShippingController {
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR);
         }
         shippingService.del(shippingId,userVo.getId());
-        return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),null,"删除地址成功");
+        return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),"删除地址成功");
     }
 
     /**
@@ -83,7 +83,7 @@ public class ShippingController {
             throw new BusinessException(ReturnCode.PARAMETER_VALUE_ERROR);
         }
         shippingService.update(shipping,userVo.getId());
-        return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),null,"更新地址成功");
+        return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),"更新地址成功");
     }
 
     /**

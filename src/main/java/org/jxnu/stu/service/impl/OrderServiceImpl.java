@@ -338,13 +338,16 @@ public class OrderServiceImpl implements OrderService {
                                   @RequestParam(defaultValue = "1") Integer pageNum) throws BusinessException {
         PageHelper.startPage(pageNum, pageSize);
         List<Order> orderList = orderMapper.selectByUserId(userId);
+        if(orderList.size() <= 0){
+            throw new BusinessException(ReturnCode.ORDER_LIST_EMPTY);
+        }
         List<OrderVo> orderVoList = new ArrayList<>();
         for (Order orderItem : orderList) {
             List<OrderItem> orderItemList = orderItemMapper.selectByUserIdAndOrderNo(orderItem.getUserId(), orderItem.getOrderNo());
             OrderVo orderVo = this.assembleOrderVo(orderItem, orderItem.getShippingId(), orderItemList);
             orderVoList.add(orderVo);
         }
-        PageInfo<OrderVo> pageResult = new PageInfo<>();
+        PageInfo pageResult = new PageInfo(orderList);
         pageResult.setList(orderVoList);
         return pageResult;
     }

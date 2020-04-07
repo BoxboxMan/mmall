@@ -86,7 +86,7 @@ public class ScheduleTask {
             for(OrderItem orderItem:orderItemList){
                 productMapper.updateStockById(orderItem.getProductId(),orderItem.getQuantity());//数据库补回
                 if(null == redisTemplate.opsForValue().get("product_stock_id_" + orderItem.getProductId())){//缓存库存
-                    redisTemplate.opsForValue().set("product_stock_id_" + orderItem.getProductId(),productMapper.selectByPrimaryKey(orderItem.getProductId()));//缓存库存
+                    redisTemplate.opsForValue().set("product_stock_id_" + orderItem.getProductId(),(productMapper.selectByPrimaryKey(orderItem.getProductId())).getStock());//缓存库存
                 }else {
                     redisTemplate.opsForValue().increment("product_stock_id_" + orderItem.getProductId(),orderItem.getQuantity().intValue());//更新缓存
                 }
