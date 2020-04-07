@@ -78,17 +78,17 @@ public class ScheduleTask {
         for (Order order:orders){
             Calendar outTime = DateUtils.toCalendar(DateUtils.addHours(order.getCreateTime(),1));
             Calendar currentTime = DateUtils.toCalendar(new Date());
-            if(outTime.before(currentTime)){//如果超时则关闭订单
+            if(outTime.before(currentTime)){//如果超时则关闭订单,并且回补库存
                 orderMapper.updateStatusByOrderNo(order.getOrderNo(),Constant.OrderStatus.ORDER_CLOSE.getStatusCode());
                 log.info("---------------------订单号:{}，被关闭-----------------------",order.getOrderNo());
-            }
-            List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(order.getOrderNo());
-            for(OrderItem orderItem:orderItemList){
-                productMapper.updateStockById(orderItem.getProductId(),orderItem.getQuantity());//数据库补回
-                if(null == redisTemplate.opsForValue().get("product_stock_id_" + orderItem.getProductId())){//缓存库存
-                    redisTemplate.opsForValue().set("product_stock_id_" + orderItem.getProductId(),(productMapper.selectByPrimaryKey(orderItem.getProductId())).getStock());//缓存库存
-                }else {
-                    redisTemplate.opsForValue().increment("product_stock_id_" + orderItem.getProductId(),orderItem.getQuantity().intValue());//更新缓存
+                List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(order.getOrderNo());
+                for(OrderItem orderItem:orderItemList){
+                    productMapper.updateStockById(orderItem.getProductId(),orderItem.getQuantity());//数据库补回
+                    if(null == redisTemplate.opsForValue().get("product_stock_id_" + orderItem.getProductId())){//缓存库存
+                        redisTemplate.opsForValue().set("product_stock_id_" + orderItem.getProductId(),(productMapper.selectByPrimaryKey(orderItem.getProductId())).getStock());//缓存库存
+                    }else {
+                        redisTemplate.opsForValue().increment("product_stock_id_" + orderItem.getProductId(),orderItem.getQuantity().intValue());//更新缓存
+                    }
                 }
             }
         }

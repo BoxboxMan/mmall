@@ -428,6 +428,16 @@ public class OrderServiceImpl implements OrderService {
             return false;
         }
         orderMapper.updateStatusByOrderNo(orderNo, Constant.OrderStatus.ORDER_CANCLE.getStatusCode());
+        log.info("---------------------订单号:{}，被取消-----------------------",order.getOrderNo());
+        List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(order.getOrderNo());
+        for(OrderItem orderItem:orderItemList){
+            productMapper.updateStockById(orderItem.getProductId(),orderItem.getQuantity());//数据库补回
+            if(null == redisTemplate.opsForValue().get("product_stock_id_" + orderItem.getProductId())){//缓存库存
+                redisTemplate.opsForValue().set("product_stock_id_" + orderItem.getProductId(),(productMapper.selectByPrimaryKey(orderItem.getProductId())).getStock());//缓存库存
+            }else {
+                redisTemplate.opsForValue().increment("product_stock_id_" + orderItem.getProductId(),orderItem.getQuantity().intValue());//更新缓存
+            }
+        }
         return true;
     }
 
@@ -479,9 +489,21 @@ public class OrderServiceImpl implements OrderService {
         OrderVo orderVo = new OrderVo();
         orderVo.setOrderNo(order.getOrderNo());
         orderVo.setPayment(order.getPayment());
-        orderVo.setPaymentType(Constant.PaymentType.OLINE_PAY.getStatusCode());
+        orderVo.setPaymentType(order.getPaymentType());
+        Constant.PaymentType[] paymentTypes = Constant.PaymentType.values();
+        for(int i=0; i<paymentTypes.length; i++){
+            if(paymentTypes[i].getStatusCode() == order.getPaymentType()){
+                orderVo.setPaymentTypeMsg(paymentTypes[i].getStatusMsg());
+            }
+        }
         orderVo.setPostage(order.getPostage());
         orderVo.setStatus(order.getStatus());
+        Constant.OrderStatus[] orderStatuses = Constant.OrderStatus.values();
+        for(int i=0; i<orderStatuses.length; i++){
+            if(orderStatuses[i].getStatusCode() == order.getStatus()){
+                orderVo.setStatusMsg(orderStatuses[i].getStatusMsg());
+            }
+        }
         orderVo.setPaymentTime(DateTimeHelper.dateToString(order.getPaymentTime()));
         orderVo.setSendTime(DateTimeHelper.dateToString(order.getSendTime()));
         orderVo.setCloseTime(DateTimeHelper.dateToString(order.getCloseTime()));
@@ -611,7 +633,7 @@ public class OrderServiceImpl implements OrderService {
         order.setUserId(userId);
         order.setShippingId(shippingId);
         order.setPayment(payment);
-        order.setPaymentType(Constant.PaymentType.OLINE_PAY.getStatusCode());
+        order.setPaymentType(Constant.PaymentType.OLINE_PAY_ALI.getStatusCode());
         order.setPostage(0);
         order.setStatus(Constant.OrderStatus.ORDER_NOT_PAY.getStatusCode());
         //支付时间、发货时间、交易完成和交易关闭时间在其他接口中会完善。

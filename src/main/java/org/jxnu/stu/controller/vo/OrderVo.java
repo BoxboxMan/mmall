@@ -8,8 +8,10 @@ public class OrderVo {
     private Long orderNo;
     private BigDecimal payment;
     private Integer paymentType;
+    private String paymentTypeMsg;//状态码转换成文字
     private Integer postage;
     private Integer status;
+    private String statusMsg;//状态码转换成文字
     private String paymentTime;
     private String sendTime;
     private String endTime;
@@ -50,8 +52,32 @@ public class OrderVo {
         return paymentType;
     }
 
+    public String getPaymentTypeMsg() {
+        return paymentTypeMsg;
+    }
+
+    public void setPaymentTypeMsg(String paymentTypeMsg) {
+        this.paymentTypeMsg = paymentTypeMsg;
+    }
+
+    public String getStatusMsg() {
+        return statusMsg;
+    }
+
+    public void setStatusMsg(String statusMsg) {
+        this.statusMsg = statusMsg;
+    }
+
     public void setPaymentType(Integer paymentType) {
         this.paymentType = paymentType;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Integer getPostage() {
@@ -62,13 +88,7 @@ public class OrderVo {
         this.postage = postage;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
 
     public String getPaymentTime() {
         return paymentTime;

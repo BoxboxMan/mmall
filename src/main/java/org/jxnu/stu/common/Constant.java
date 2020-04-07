@@ -69,7 +69,7 @@ public class Constant {
     }
 
     public enum  PaymentType{
-        OLINE_PAY(1,"网上支付"),
+        OLINE_PAY_ALI(1,"支付宝网上支付"),
         ;
 
         private Integer statusCode;
