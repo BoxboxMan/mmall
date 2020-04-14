@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping("/user")
-@CrossOrigin(allowCredentials = "true", origins = "*")
+//@CrossOrigin(allowCredentials = "true", origins = "*")
 public class UserController {
 
     @Autowired
