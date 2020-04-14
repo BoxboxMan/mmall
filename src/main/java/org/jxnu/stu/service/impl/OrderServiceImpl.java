@@ -370,7 +370,7 @@ public class OrderServiceImpl implements OrderService {
             OrderVo orderVo = this.assembleOrderVo(orderItem, orderItem.getShippingId(), orderItemList);
             orderVoList.add(orderVo);
         }
-        PageInfo<OrderVo> pageResult = new PageInfo<>();
+        PageInfo pageResult = new PageInfo(orderList);
         pageResult.setList(orderVoList);
         return pageResult;
     }

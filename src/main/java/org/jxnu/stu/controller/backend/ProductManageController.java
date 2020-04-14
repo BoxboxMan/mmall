@@ -64,7 +64,7 @@ public class ProductManageController {
      * @return
      * @throws BusinessException
      */
-    @RequestMapping(value = "/search",method = RequestMethod.POST)
+    @RequestMapping(value = "/search",method = RequestMethod.GET)
     @ResponseBody
     public  ServerResponse<PageInfo> search(String productName,Integer productId,@RequestParam(defaultValue = "1") Integer pageNum,
                                             @RequestParam(defaultValue = "10") Integer pageSize, HttpSession session) throws BusinessException {
@@ -99,7 +99,7 @@ public class ProductManageController {
      * @return
      * @throws BusinessException
      */
-    @RequestMapping(value = "/detail",method = RequestMethod.POST)
+    @RequestMapping(value = "/detail",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<ProductVo> detail(Integer productId,HttpServletRequest request) throws BusinessException {
         if(productId == null){
@@ -117,7 +117,7 @@ public class ProductManageController {
      * @return
      * @throws BusinessException
      */
-    @RequestMapping(value = "/set_sale_status",method = RequestMethod.POST)
+    @RequestMapping(value = "/set_sale_status",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> setSaleStatus(Integer productId, Integer status,HttpServletRequest request) throws BusinessException {
         if(productId == null || status == null){
@@ -133,7 +133,7 @@ public class ProductManageController {
      * @param product
      * @return
      */
-    @RequestMapping(value = "/save",method = RequestMethod.POST)
+    @RequestMapping(value = "/save",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse save(@Valid ProductVo product,HttpServletRequest request) throws BusinessException {
         ValidationResult validate = validation.validate(product);
@@ -153,7 +153,7 @@ public class ProductManageController {
      * @return
      * @throws BusinessException
      */
-    @RequestMapping(value = "/richtext_img_upload",method = RequestMethod.POST)
+    @RequestMapping(value = "/richtext_img_upload",method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public Map richtextImgUpload(MultipartFile img, HttpServletRequest request, HttpServletResponse response) throws BusinessException {
         Map<String,String> map = Maps.newHashMap();

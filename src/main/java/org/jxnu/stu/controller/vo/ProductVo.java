@@ -14,14 +14,15 @@ public class ProductVo {
     @NotNull(message = "请填写商品分类信息")
     private Integer categoryId;
 
+    private Integer parentCategoryId;
+
     @NotEmpty(message = "请填写商品名称")
     private String name;
 
     @NotEmpty(message = "请填写商品子标题")
     private String subtitle;
-    @NotEmpty(message = "请上传商品主图")
+    //@NotEmpty(message = "请上传商品主图")
     private String mainImage;
-    @NotEmpty(message = "请上传商品子图")
     private List<String> subImages;
 
     private String detail;
@@ -37,6 +38,14 @@ public class ProductVo {
     private String updateTime;
     private String uri;
     private String url;
+
+    public Integer getParentCategoryId() {
+        return parentCategoryId;
+    }
+
+    public void setParentCategoryId(Integer parentCategoryId) {
+        this.parentCategoryId = parentCategoryId;
+    }
 
     public String getUri() {
         return uri;

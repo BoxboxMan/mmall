@@ -95,4 +95,6 @@ public interface CategoryMapper {
     int updateByPrimaryKey(Category record);
 
     List<Category> findChildrenParallelCategory(Integer categoryId);
+
+    int selectParentById(Integer categoryId);
 }

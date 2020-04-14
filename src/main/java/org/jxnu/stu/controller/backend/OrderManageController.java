@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RequestMapping("/manage/order")
 @Controller
@@ -45,6 +46,19 @@ public class OrderManageController {
                                          @RequestParam(defaultValue = "1") Integer pageNum) throws BusinessException {
         PageInfo<OrderVo> orderVoPageInfo = orderService.listAll(pageSize, pageNum);
         return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),orderVoPageInfo);
+    }
+
+    /**
+     * 根据订单号获取订单的信息，包括订单详情
+     * @param orderNo
+     * @return
+     * @throws BusinessException
+     */
+    @RequestMapping(value = "/detail",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<OrderVo> detail(Long orderNo) throws BusinessException {
+        OrderVo orderVo = orderService.detail(orderNo);
+        return ServerResponse.createServerResponse(ReturnCode.SUCCESS.getCode(),orderVo);
     }
 
     /**

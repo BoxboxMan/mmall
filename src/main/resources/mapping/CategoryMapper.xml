@@ -322,4 +322,11 @@
     from mmall_category
     where parent_id = #{categoryId}
   </select>
+  <select id="selectParentById" parameterType="java.lang.Integer" resultType="int">
+    select
+     parent_id
+    from mmall_category
+    where id = #{categoryId}
+  </select>
+
 </mapper>

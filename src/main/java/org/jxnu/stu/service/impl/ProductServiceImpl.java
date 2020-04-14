@@ -115,7 +115,8 @@ public class ProductServiceImpl implements ProductService {
         for (Product productItem : products) {
             productVoList.add(this.assemebleProductVoFromProductDo(productItem));
         }
-        PageInfo pageInfo = new PageInfo(productVoList);
+        PageInfo pageInfo = new PageInfo(products);
+        pageInfo.setList(productVoList);
         return pageInfo;
     }
 
@@ -130,9 +131,9 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public PageInfo search(String productName, Integer productId, Integer pageNum, Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
         List<Product> products = new ArrayList<>();
         if (productId != null) {
+            PageHelper.startPage(pageNum, pageSize);
             Product product = productMapper.selectByPrimaryKey(productId);
             products.add(product);
             PageInfo pageInfo = new PageInfo(products);
@@ -141,13 +142,15 @@ public class ProductServiceImpl implements ProductService {
         List<Product> productList = new ArrayList<>();
         if (!StringUtils.isEmpty(productName)) {
             productName = new StringBuilder().append("%").append(productName).append("%").toString();
+            PageHelper.startPage(pageNum, pageSize);
             productList = productMapper.listProductByProductName(productName);
         }
         List<ProductListVo> productVoList = new ArrayList<>();
         for (Product product : productList) {
             productVoList.add(coverProductVoFromProductDo(product));
         }
-        PageInfo pageInfo = new PageInfo(productVoList);
+        PageInfo pageInfo = new PageInfo(productList);
+        pageInfo.setList(productVoList);
         return pageInfo;
     }
 
@@ -234,6 +237,7 @@ public class ProductServiceImpl implements ProductService {
         }
         ProductVo productVo = new ProductVo();
         BeanUtils.copyProperties(product, productVo);
+        productVo.setParentCategoryId(categoryMapper.selectParentById(productVo.getCategoryId()));
         productVo.setCreateTime(DateTimeHelper.dateToString(product.getCreateTime()));
         productVo.setUpdateTime(DateTimeHelper.dateToString(product.getUpdateTime()));
         //获取图片服务器前缀

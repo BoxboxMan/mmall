@@ -55,7 +55,7 @@ public class UserManageController {
         }
         UserBo userBo = userService.login(username, password);
         if (userBo.getRole() == Constant.USER_ORDINARY) {
-            throw new BusinessException(ReturnCode.USER_LOGIN_FAILED,"请在用户接口登录");
+            throw new BusinessException(ReturnCode.USER_HAS_NO_PERMISSION);
         }
         UserVo userVo = userController.coverUserVoFromUserBo(userBo);
         String token = session.getId();

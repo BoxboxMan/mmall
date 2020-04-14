@@ -44,7 +44,7 @@ public class CategoryManageController {
      * @return
      * @throws BusinessException
      */
-    @RequestMapping(value = "/get_category", method = RequestMethod.POST)
+    @RequestMapping(value = "/get_category", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<List<CategoryVo>> getCategory(@RequestParam(defaultValue = "0") Integer categoryId, HttpServletRequest request) throws BusinessException {
         List<CategoryBo> categoryBoList = categoryService.getChildrenParallelCategory(categoryId);
@@ -65,7 +65,7 @@ public class CategoryManageController {
      * @return
      * @throws BusinessException
      */
-    @RequestMapping(value = "/add_category", method = RequestMethod.POST)
+    @RequestMapping(value = "/add_category", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> addCategory(@RequestParam(defaultValue = "0") Integer parentId, String categoryName, HttpSession session) throws BusinessException {
         if (StringUtils.isEmpty(categoryName)) {
@@ -87,7 +87,7 @@ public class CategoryManageController {
      * @return
      * @throws BusinessException
      */
-    @RequestMapping(value = "/set_category_name", method = RequestMethod.POST)
+    @RequestMapping(value = "/set_category_name", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> setCategoryName(Integer categoryId, String categoryName, HttpSession session) throws BusinessException {
         if (categoryId == null) {
@@ -107,7 +107,7 @@ public class CategoryManageController {
      * @return
      * @throws BusinessException
      */
-    @RequestMapping(value = "/get_deep_category", method = RequestMethod.POST)
+    @RequestMapping(value = "/get_deep_category", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<List<CategoryVo>> getDeepCategory(Integer categoryId, HttpSession session) throws BusinessException {
         if (categoryId == null) {
