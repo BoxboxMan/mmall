@@ -33,7 +33,7 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping("/order")
-//@CrossOrigin(allowCredentials = "true", origins = "*")
+@CrossOrigin(allowCredentials = "true")
 public class OrderController {
 
     public static final ThreadLocal<OrderVo> temp = new ThreadLocal<>();
