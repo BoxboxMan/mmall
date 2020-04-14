@@ -26,7 +26,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-@CrossOrigin(allowCredentials = "true")
+//@CrossOrigin(allowCredentials = "true", origins = "*")
 public class LoginIntercept implements HandlerInterceptor {
 
     @Autowired

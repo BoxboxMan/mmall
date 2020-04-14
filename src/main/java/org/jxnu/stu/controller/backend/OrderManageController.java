@@ -21,7 +21,7 @@ import java.util.List;
 
 @RequestMapping("/manage/order")
 @Controller
-@CrossOrigin(allowCredentials = "true")
+//@CrossOrigin(allowCredentials = "true", origins = "*")
 public class OrderManageController {
 
     @Autowired

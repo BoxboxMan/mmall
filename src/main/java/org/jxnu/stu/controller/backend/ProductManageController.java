@@ -24,7 +24,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/manage/product")
-@CrossOrigin(allowCredentials = "true")
+//@CrossOrigin(allowCredentials = "true", origins = "*")
 public class ProductManageController {
 
     @Autowired
