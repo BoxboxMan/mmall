@@ -32,8 +32,6 @@ public class MvcConfig extends WebMvcConfigurationSupport {
         excludePatterns.add("/manage/user/login");
         excludePatterns.add("/user/login");
         excludePatterns.add("/cart/get_cart_product_count");
-        excludePatterns.add("/manage/product/upload");
-        excludePatterns.add("/manage/product/richtext_img_upload");
         registry.addInterceptor(loginIntercept).addPathPatterns(patterns).excludePathPatterns(excludePatterns);
         super.addInterceptors(registry);
     }
