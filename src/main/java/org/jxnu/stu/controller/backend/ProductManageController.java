@@ -24,7 +24,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/manage/product")
-//@CrossOrigin(allowCredentials = "true", origins = "*")
+//@CrossOrigin(allowCredentials = "true", origins = {"http://www.wannarich.com","http://admin.wannarich.com"})
 public class ProductManageController {
 
     @Autowired
@@ -80,7 +80,8 @@ public class ProductManageController {
      * @return
      * @throws BusinessException
      */
-    @RequestMapping(value = "/upload",method = RequestMethod.POST)
+   // @CrossOrigin(allowCredentials = "true", origins = "*")
+    @RequestMapping(value = "/upload",method = {RequestMethod.GET,RequestMethod.POST,RequestMethod.OPTIONS})
     @ResponseBody
     public ServerResponse<Map<String,String>> upload(MultipartFile file, HttpServletRequest request) throws BusinessException {
         String path = request.getSession().getServletContext().getRealPath("upload");
@@ -153,7 +154,8 @@ public class ProductManageController {
      * @return
      * @throws BusinessException
      */
-    @RequestMapping(value = "/richtext_img_upload",method = {RequestMethod.GET,RequestMethod.POST})
+    //@CrossOrigin(allowCredentials = "true", origins = "*")
+    @RequestMapping(value = "/richtext_img_upload",method = {RequestMethod.GET,RequestMethod.POST,RequestMethod.OPTIONS})
     @ResponseBody
     public Map richtextImgUpload(MultipartFile img, HttpServletRequest request, HttpServletResponse response) throws BusinessException {
         Map<String,String> map = Maps.newHashMap();

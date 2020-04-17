@@ -11,8 +11,10 @@ import org.jxnu.stu.util.CookieHelper;
 import org.jxnu.stu.util.JsonHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,7 +28,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-//@CrossOrigin(allowCredentials = "true", origins = "*")
+//@CrossOrigin(allowCredentials = "true", origins = {"http://www.wannarich.com","http://admin.wannarich.com"})
 public class LoginIntercept implements HandlerInterceptor {
 
     @Autowired
@@ -40,6 +42,7 @@ public class LoginIntercept implements HandlerInterceptor {
      * @return
      * @throws Exception
      */
+    @ResponseStatus(HttpStatus.OK)
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String requestURL = request.getRequestURL().toString();

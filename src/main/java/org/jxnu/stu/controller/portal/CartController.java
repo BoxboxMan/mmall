@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/cart")
-//@CrossOrigin(allowCredentials = "true")
+//@CrossOrigin(allowCredentials = "true", origins = {"http://www.wannarich.com","http://admin.wannarich.com"})
 public class CartController {
 
     @Autowired

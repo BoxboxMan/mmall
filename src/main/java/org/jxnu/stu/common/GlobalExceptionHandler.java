@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-//    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public <T> ServerResponse<T> exceptionHandler(HttpServletRequest request, HttpServletResponse response,Exception e){

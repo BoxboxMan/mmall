@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 @WebFilter( urlPatterns = "/*",filterName = "sessionExpireFilter")
-//@CrossOrigin(allowCredentials = "true")
+//@CrossOrigin(allowCredentials = "true", origins = {"http://www.wannarich.com","http://admin.wannarich.com"})
 public class SessionExpireFilter implements Filter {
 
     @Autowired

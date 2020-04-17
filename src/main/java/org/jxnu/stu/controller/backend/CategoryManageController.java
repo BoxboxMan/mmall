@@ -25,7 +25,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/manage/category")
-//@CrossOrigin(allowCredentials = "true", origins = "*")
+//@CrossOrigin(allowCredentials = "true", origins = {"http://www.wannarich.com","http://admin.wannarich.com"})
 public class CategoryManageController {
 
     @Autowired
